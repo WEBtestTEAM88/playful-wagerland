@@ -3,12 +3,12 @@ import { useUser } from "@/contexts/UserContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
-import { Coins, Cherry, Lemon, Seven } from "lucide-react";
+import { Coins, Cherry, Star, Gem } from "lucide-react";
 
 const SYMBOLS = [
   { icon: Cherry, name: "cherry", multiplier: 2 },
-  { icon: Lemon, name: "lemon", multiplier: 3 },
-  { icon: Seven, name: "seven", multiplier: 7 },
+  { icon: Star, name: "star", multiplier: 3 },
+  { icon: Gem, name: "gem", multiplier: 7 },
   { icon: Coins, name: "coins", multiplier: 5 },
 ];
 

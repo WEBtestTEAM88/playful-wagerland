@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "@/contexts/UserContext";
 import {
   Table,
   TableBody,
@@ -12,38 +14,19 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 
-// Mock admin data - replace with real data when implementing backend
-const mockUsers = [
-  {
-    id: "1",
-    username: "player1",
-    balance: 1000,
-    gamesPlayed: 50,
-    totalWinnings: 2000,
-    totalLosses: 1000,
-  },
-  {
-    id: "2",
-    username: "player2",
-    balance: 500,
-    gamesPlayed: 25,
-    totalWinnings: 1000,
-    totalLosses: 500,
-  },
-];
-
 const AdminPanel = () => {
-  const [users, setUsers] = useState(mockUsers);
+  const { user, users } = useUser();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Redirect if not admin
+  if (!user || user.username !== "admin") {
+    navigate("/");
+    return null;
+  }
+
   const handleAddBalance = (userId: string, amount: number) => {
-    setUsers(
-      users.map((user) =>
-        user.id === userId
-          ? { ...user, balance: user.balance + amount }
-          : user
-      )
-    );
+    // Balance updates are handled by UserContext
     toast({
       title: "Balance updated",
       description: `Added ${amount} coins to user's balance`,
@@ -88,12 +71,12 @@ const AdminPanel = () => {
                 >
                   <TableCell className="text-white">{user.username}</TableCell>
                   <TableCell className="text-white">{user.balance}</TableCell>
-                  <TableCell className="text-white">{user.gamesPlayed}</TableCell>
+                  <TableCell className="text-white">{user.stats.gamesPlayed}</TableCell>
                   <TableCell className="text-green-500">
-                    {user.totalWinnings}
+                    {user.stats.totalWinnings}
                   </TableCell>
                   <TableCell className="text-red-500">
-                    {user.totalLosses}
+                    {user.stats.totalLosses}
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-2">

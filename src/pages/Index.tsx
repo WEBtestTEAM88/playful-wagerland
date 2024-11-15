@@ -1,6 +1,7 @@
 import { AuthForm } from "@/components/auth/AuthForm";
 import { Roulette } from "@/components/games/Roulette";
 import { SlotMachine } from "@/components/games/SlotMachine";
+import { RockPaperScissors } from "@/components/games/RockPaperScissors";
 import { useUser } from "@/contexts/UserContext";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -43,9 +44,10 @@ const Index = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <Roulette />
               <SlotMachine />
+              <RockPaperScissors />
             </div>
           </div>
         ) : (

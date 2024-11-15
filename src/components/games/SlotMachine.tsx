@@ -3,13 +3,15 @@ import { useUser } from "@/contexts/UserContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
-import { Coins, Cherry, Star, Gem } from "lucide-react";
+import { Coins, Cherry, Star, Gem, Diamond, Bell } from "lucide-react";
 
 const SYMBOLS = [
   { icon: Cherry, name: "cherry", multiplier: 2 },
   { icon: Star, name: "star", multiplier: 3 },
-  { icon: Gem, name: "gem", multiplier: 7 },
-  { icon: Coins, name: "coins", multiplier: 5 },
+  { icon: Gem, name: "gem", multiplier: 5 },
+  { icon: Diamond, name: "diamond", multiplier: 7 },
+  { icon: Bell, name: "bell", multiplier: 4 },
+  { icon: Coins, name: "coins", multiplier: 6 },
 ];
 
 export const SlotMachine = () => {
@@ -17,6 +19,7 @@ export const SlotMachine = () => {
   const [reels, setReels] = useState([SYMBOLS[0], SYMBOLS[0], SYMBOLS[0]]);
   const [isSpinning, setIsSpinning] = useState(false);
   const [bet, setBet] = useState(10);
+  const [lastWin, setLastWin] = useState<number | null>(null);
 
   const spin = () => {
     if (!user) return;
@@ -30,6 +33,7 @@ export const SlotMachine = () => {
     }
 
     setIsSpinning(true);
+    setLastWin(null);
     updateBalance(-bet);
 
     // Simulate spinning animation
@@ -55,6 +59,7 @@ export const SlotMachine = () => {
       // Check for wins
       if (finalReels[0].name === finalReels[1].name && finalReels[1].name === finalReels[2].name) {
         const winnings = bet * finalReels[0].multiplier;
+        setLastWin(winnings);
         updateBalance(winnings);
         toast({
           title: "Jackpot!",
@@ -71,21 +76,38 @@ export const SlotMachine = () => {
         <p className="text-sm text-gray-400">Match 3 symbols to win!</p>
       </div>
 
-      <div className="flex justify-center gap-4 p-6 bg-casino-black rounded-lg border border-casino-gold/30">
-        {reels.map((symbol, index) => (
-          <div
-            key={index}
-            className={`w-24 h-24 flex items-center justify-center bg-casino-black/50 rounded-lg border-2 border-casino-gold/20 ${
-              isSpinning ? "animate-spin-slow" : ""
-            }`}
-          >
-            <symbol.icon className="w-12 h-12 text-casino-gold" />
+      <div className="relative">
+        <div className="flex justify-center gap-4 p-6 bg-casino-black rounded-lg border border-casino-gold/30">
+          {reels.map((symbol, index) => (
+            <div
+              key={index}
+              className={`w-24 h-24 flex items-center justify-center bg-casino-black/50 rounded-lg border-2 border-casino-gold/20 ${
+                isSpinning ? "animate-spin-slow" : ""
+              }`}
+            >
+              <symbol.icon className="w-12 h-12 text-casino-gold" />
+            </div>
+          ))}
+        </div>
+        {lastWin && (
+          <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-casino-gold text-casino-black px-4 py-1 rounded-full text-sm font-bold animate-bounce">
+            +{lastWin} coins
+          </div>
+        )}
+      </div>
+
+      <div className="grid grid-cols-3 gap-2 p-4 bg-casino-black/30 rounded-lg">
+        {SYMBOLS.map((symbol, index) => (
+          <div key={index} className="flex items-center gap-2 text-sm text-gray-400">
+            <symbol.icon className="w-4 h-4 text-casino-gold" />
+            <span>x{symbol.multiplier}</span>
           </div>
         ))}
       </div>
 
       <div className="space-y-4">
-        <div className="flex gap-4">
+        <div>
+          <label className="text-sm text-gray-400 mb-1 block">Bet Amount</label>
           <input
             type="number"
             min={1}

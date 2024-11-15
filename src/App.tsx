@@ -10,8 +10,8 @@ import AdminPanel from "./pages/Admin";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <UserProvider>
-    <QueryClientProvider client={queryClient}>
+  <QueryClientProvider client={queryClient}>
+    <UserProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -22,8 +22,8 @@ const App = () => (
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
-    </QueryClientProvider>
-  </UserProvider>
+    </UserProvider>
+  </QueryClientProvider>
 );
 
 export default App;

@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
-import { Ban, Crown, Coins } from "lucide-react";
+import { Ban, Crown, Coins, Settings } from "lucide-react";
 
 const AdminPanel = () => {
   const { user, users, updateBalance } = useUser();
@@ -139,7 +139,7 @@ const AdminPanel = () => {
                         variant="outline"
                         className="border-casino-gold/30 text-casino-gold"
                       >
-                        <UserCog className="w-4 h-4 mr-1" />
+                        <Settings className="w-4 h-4 mr-1" />
                         Reset Stats
                       </Button>
                       <Button

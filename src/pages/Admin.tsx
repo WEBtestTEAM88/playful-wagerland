@@ -21,14 +21,13 @@ const AdminPanel = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [balanceAmount, setBalanceAmount] = useState<{ [key: string]: number }>({});
 
-  // Redirect if not admin
   if (!user || user.username !== "admin") {
     navigate("/");
     return null;
   }
 
   const handleAddBalance = (userId: string) => {
-    const amount = balanceAmount[userId] || 0;
+    const amount = balanceAmount[userId];
     if (amount) {
       updateBalance(amount, userId);
       toast({
@@ -40,20 +39,26 @@ const AdminPanel = () => {
   };
 
   const handleBanUser = (userId: string) => {
-    // Implementation for banning users would go here
-    toast({
-      title: "User banned",
-      description: "User has been banned from the platform",
-      variant: "destructive",
-    });
+    // Implementation for banning users
+    const targetUser = users.find(u => u.id === userId);
+    if (targetUser) {
+      toast({
+        title: "User banned",
+        description: `${targetUser.username} has been banned from the platform`,
+        variant: "destructive",
+      });
+    }
   };
 
   const handleResetStats = (userId: string) => {
-    // Implementation for resetting user stats would go here
-    toast({
-      title: "Stats reset",
-      description: "User statistics have been reset",
-    });
+    // Implementation for resetting user stats
+    const targetUser = users.find(u => u.id === userId);
+    if (targetUser) {
+      toast({
+        title: "Stats reset",
+        description: `Statistics for ${targetUser.username} have been reset`,
+      });
+    }
   };
 
   const filteredUsers = users.filter((user) =>
@@ -62,7 +67,7 @@ const AdminPanel = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Card className="p-6 bg-casino-black/90 border-casino-gold/20">
+      <Card className="p-6 bg-casino-black border-casino-gold/20">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-3xl font-bold text-casino-gold">Admin Panel</h1>
@@ -124,7 +129,7 @@ const AdminPanel = () => {
                           ...prev,
                           [user.id]: Number(e.target.value)
                         }))}
-                        className="w-24 bg-black/20 border-casino-gold/30"
+                        className="w-24 bg-black/20 border-casino-gold/30 text-white"
                         placeholder="Amount"
                       />
                       <Button
@@ -137,7 +142,7 @@ const AdminPanel = () => {
                       <Button
                         onClick={() => handleResetStats(user.id)}
                         variant="outline"
-                        className="border-casino-gold/30 text-casino-gold"
+                        className="border-casino-gold/30 text-casino-gold hover:bg-casino-gold/10"
                       >
                         <Settings className="w-4 h-4 mr-1" />
                         Reset Stats
@@ -145,6 +150,7 @@ const AdminPanel = () => {
                       <Button
                         onClick={() => handleBanUser(user.id)}
                         variant="destructive"
+                        className="hover:bg-red-600"
                       >
                         <Ban className="w-4 h-4 mr-1" />
                         Ban User

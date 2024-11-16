@@ -63,7 +63,7 @@ export const SlotMachine = () => {
         updateBalance(winnings);
         toast({
           title: "Jackpot!",
-          description: `You won ${winnings} coins!`,
+          description: `You won $${winnings}!`,
         });
       }
     }, 2000);
@@ -91,7 +91,7 @@ export const SlotMachine = () => {
         </div>
         {lastWin && (
           <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-casino-gold text-casino-black px-4 py-1 rounded-full text-sm font-bold animate-bounce">
-            +{lastWin} coins
+            +${lastWin}
           </div>
         )}
       </div>
@@ -132,7 +132,7 @@ export const SlotMachine = () => {
 
       {user && (
         <div className="text-center text-sm text-gray-400">
-          Balance: {user.balance} coins
+          Balance: ${user.balance}
         </div>
       )}
     </Card>

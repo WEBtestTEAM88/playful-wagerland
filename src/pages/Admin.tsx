@@ -13,12 +13,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
-import { Ban, Crown, Coins, UserCog } from "lucide-react";
+import { Ban, Crown, Coins } from "lucide-react";
 
 const AdminPanel = () => {
   const { user, users, updateBalance } = useUser();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const [balanceAmount, setBalanceAmount] = useState<{ [key: string]: number }>({});
 
   // Redirect if not admin
   if (!user || user.username !== "admin") {
@@ -26,12 +27,16 @@ const AdminPanel = () => {
     return null;
   }
 
-  const handleAddBalance = (userId: string, amount: number) => {
-    updateBalance(amount, userId);
-    toast({
-      title: "Balance updated",
-      description: `Modified user's balance by $${amount}`,
-    });
+  const handleAddBalance = (userId: string) => {
+    const amount = balanceAmount[userId] || 0;
+    if (amount) {
+      updateBalance(amount, userId);
+      toast({
+        title: "Balance updated",
+        description: `Modified user's balance by $${amount}`,
+      });
+      setBalanceAmount(prev => ({ ...prev, [userId]: 0 }));
+    }
   };
 
   const handleBanUser = (userId: string) => {
@@ -111,13 +116,23 @@ const AdminPanel = () => {
                     ${user.stats.totalLosses}
                   </TableCell>
                   <TableCell>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 items-center">
+                      <Input
+                        type="number"
+                        value={balanceAmount[user.id] || ""}
+                        onChange={(e) => setBalanceAmount(prev => ({
+                          ...prev,
+                          [user.id]: Number(e.target.value)
+                        }))}
+                        className="w-24 bg-black/20 border-casino-gold/30"
+                        placeholder="Amount"
+                      />
                       <Button
-                        onClick={() => handleAddBalance(user.id, 100)}
+                        onClick={() => handleAddBalance(user.id)}
                         className="bg-casino-gold hover:bg-casino-gold/90 text-black"
                       >
                         <Coins className="w-4 h-4 mr-1" />
-                        Add $100
+                        Update
                       </Button>
                       <Button
                         onClick={() => handleResetStats(user.id)}

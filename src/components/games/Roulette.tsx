@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUser } from "@/contexts/UserContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import { CircleDot, Dice1, Dice2, Dice3, Dice4, Dice5, Dice6 } from "lucide-react";
+import { playWinSound, playLoseSound, playSpinSound } from "@/utils/sounds";
 
 export const Roulette = () => {
   const { user, updateBalance } = useUser();
@@ -12,6 +13,8 @@ export const Roulette = () => {
   const [selectedNumber, setSelectedNumber] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
   const [lastResult, setLastResult] = useState<number | null>(null);
+  const [stats, setStats] = useState({ wins: 0, losses: 0 });
+  const [wheelRotation, setWheelRotation] = useState(0);
 
   const handleSpin = () => {
     if (!user) return;
@@ -26,18 +29,28 @@ export const Roulette = () => {
 
     setIsSpinning(true);
     updateBalance(-bet);
+    playSpinSound();
 
-    // Simulate roulette spin
+    // Simulate roulette spin with dynamic rotation
+    const spins = 5; // Number of full rotations
+    const result = Math.floor(Math.random() * 37);
+    const finalRotation = spins * 360 + (result * (360 / 37));
+    setWheelRotation(finalRotation);
+
     setTimeout(() => {
-      const result = Math.floor(Math.random() * 37);
       setLastResult(result);
       if (result === selectedNumber) {
         const winnings = bet * 35;
         updateBalance(winnings);
+        setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
+        playWinSound();
         toast({
           title: "Congratulations!",
-          description: `You won ${winnings} coins!`,
+          description: `You won $${winnings}!`,
         });
+      } else {
+        setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
+        playLoseSound();
       }
       setIsSpinning(false);
     }, 3000);
@@ -45,28 +58,34 @@ export const Roulette = () => {
 
   const renderRouletteWheel = () => {
     return (
-      <div className="relative w-48 h-48 mx-auto mb-6">
-        <div className={`absolute inset-0 rounded-full border-4 border-casino-gold flex items-center justify-center ${isSpinning ? 'animate-spin-slow' : ''}`}>
-          <CircleDot className="w-12 h-12 text-casino-gold" />
+      <div className="relative w-64 h-64 mx-auto mb-6">
+        <div 
+          className={`absolute inset-0 rounded-full border-4 border-casino-gold bg-gradient-to-br from-casino-black to-casino-black/80 flex items-center justify-center transform`}
+          style={{
+            transform: `rotate(${wheelRotation}deg)`,
+            transition: isSpinning ? 'transform 3s cubic-bezier(0.4, 0, 0.2, 1)' : 'none'
+          }}
+        >
+          <div className="absolute inset-0 flex items-center justify-center">
+            <CircleDot className="w-16 h-16 text-casino-gold" />
+          </div>
+          {Array.from({ length: 37 }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1 h-4 bg-casino-gold/50"
+              style={{
+                transform: `rotate(${i * (360 / 37)}deg) translateY(-50%)`,
+                transformOrigin: '50% 50%',
+                top: '50%',
+              }}
+            />
+          ))}
         </div>
         {lastResult !== null && (
-          <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-casino-gold font-bold">
+          <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-casino-gold font-bold text-xl">
             Last: {lastResult}
           </div>
         )}
-      </div>
-    );
-  };
-
-  const renderDiceRow = () => {
-    const diceIcons = [Dice1, Dice2, Dice3, Dice4, Dice5, Dice6];
-    return (
-      <div className="flex justify-center gap-2 mb-6">
-        {diceIcons.map((DiceIcon, index) => (
-          <div key={index} className="p-2 bg-casino-black/30 rounded-lg">
-            <DiceIcon className="w-6 h-6 text-casino-gold" />
-          </div>
-        ))}
       </div>
     );
   };
@@ -76,9 +95,12 @@ export const Roulette = () => {
       <div className="text-center">
         <h2 className="text-2xl font-bold text-casino-gold mb-2">Roulette</h2>
         <p className="text-sm text-gray-400">Choose a number between 0 and 36</p>
+        <div className="mt-2 flex justify-center gap-4 text-sm">
+          <span className="text-green-500">Wins: {stats.wins}</span>
+          <span className="text-red-500">Losses: {stats.losses}</span>
+        </div>
       </div>
 
-      {renderDiceRow()}
       {renderRouletteWheel()}
 
       <div className="space-y-4">
@@ -121,7 +143,7 @@ export const Roulette = () => {
 
       {user && (
         <div className="text-center text-sm text-gray-400">
-          Balance: {user.balance} coins
+          Balance: ${user.balance}
         </div>
       )}
     </Card>

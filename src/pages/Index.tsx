@@ -2,10 +2,13 @@ import { AuthForm } from "@/components/auth/AuthForm";
 import { Roulette } from "@/components/games/Roulette";
 import { SlotMachine } from "@/components/games/SlotMachine";
 import { RockPaperScissors } from "@/components/games/RockPaperScissors";
+import { DiamondMine } from "@/components/games/DiamondMine";
+import { LuckyDice } from "@/components/games/LuckyDice";
+import { CardFlip } from "@/components/games/CardFlip";
 import { useUser } from "@/contexts/UserContext";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Shield } from "lucide-react";
+import { Shield, Coins } from "lucide-react";
 
 const Index = () => {
   const { user, logout } = useUser();
@@ -20,7 +23,10 @@ const Index = () => {
                 <h1 className="text-4xl font-bold text-casino-gold">
                   Welcome, {user.username}
                 </h1>
-                <p className="text-gray-400">Balance: {user.balance} coins</p>
+                <div className="flex items-center gap-2 mt-2 text-xl">
+                  <Coins className="w-6 h-6 text-casino-gold" />
+                  <span className="text-casino-gold font-bold">${user.balance}</span>
+                </div>
               </div>
               <div className="flex gap-4">
                 {user.username === "admin" && (
@@ -48,6 +54,9 @@ const Index = () => {
               <Roulette />
               <SlotMachine />
               <RockPaperScissors />
+              <DiamondMine />
+              <LuckyDice />
+              <CardFlip />
             </div>
           </div>
         ) : (

@@ -40,24 +40,6 @@ const Index = () => {
                     </Button>
                   </Link>
                 )}
-                <Link to="/leadership">
-                  <Button
-                    variant="outline"
-                    className="border-casino-gold/30 text-casino-gold hover:bg-casino-gold/10"
-                  >
-                    <Trophy className="w-4 h-4 mr-2" />
-                    Leadership
-                  </Button>
-                </Link>
-                <Link to="/profile">
-                  <Button
-                    variant="outline"
-                    className="border-casino-gold/30 text-casino-gold hover:bg-casino-gold/10"
-                  >
-                    <User className="w-4 h-4 mr-2" />
-                    Profile
-                  </Button>
-                </Link>
                 <Button
                   onClick={logout}
                   variant="outline"

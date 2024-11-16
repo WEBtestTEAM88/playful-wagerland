@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import { Coins, Cherry, Star, Gem, Diamond, Bell } from "lucide-react";
+import { playWinSound, playLoseSound, playSpinSound } from "@/utils/sounds";
 
 const SYMBOLS = [
   { icon: Cherry, name: "cherry", multiplier: 2 },
@@ -35,6 +36,7 @@ export const SlotMachine = () => {
     setIsSpinning(true);
     setLastWin(null);
     updateBalance(-bet);
+    playSpinSound();
 
     // Simulate spinning animation
     const spinInterval = setInterval(() => {

@@ -7,26 +7,41 @@ interface UserContextType {
   login: (username: string, password: string) => Promise<void>;
   register: (username: string, password: string) => Promise<void>;
   logout: () => void;
-  updateBalance: (amount: number) => void;
+  updateBalance: (amount: number, userId?: string) => void;
   users: User[];
+  updateUserStats: (gameType: string, won: boolean, amount: number) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-// Load users from localStorage or use default if none exist
+// Load users and current user from localStorage
 const getInitialUsers = (): User[] => {
   const savedUsers = localStorage.getItem('casinoUsers');
   return savedUsers ? JSON.parse(savedUsers) : [];
 };
 
+const getCurrentUser = (): User | null => {
+  const savedUser = localStorage.getItem('currentUser');
+  return savedUser ? JSON.parse(savedUser) : null;
+};
+
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(getCurrentUser());
   const [users, setUsers] = useState<User[]>(getInitialUsers);
 
   // Save users to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('casinoUsers', JSON.stringify(users));
   }, [users]);
+
+  // Save current user to localStorage whenever it changes
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('currentUser', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('currentUser');
+    }
+  }, [user]);
 
   const login = async (username: string, password: string) => {
     if (username === "admin" && password === "admin") {
@@ -40,6 +55,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
           totalWinnings: 0,
           totalLosses: 0,
           biggestWin: 0,
+          gameStats: {}
         },
         inventory: [],
       };
@@ -87,6 +103,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         totalWinnings: 0,
         totalLosses: 0,
         biggestWin: 0,
+        gameStats: {}
       },
       inventory: [],
     };
@@ -101,17 +118,52 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem('currentUser');
     toast({
       title: "Goodbye!",
       description: "You have been logged out successfully.",
     });
   };
 
-  const updateBalance = (amount: number) => {
+  const updateBalance = (amount: number, userId?: string) => {
+    if (user && user.id !== "admin") {
+      const targetId = userId || user.id;
+      setUsers(prev => prev.map(u => {
+        if (u.id === targetId) {
+          const updatedUser = {
+            ...u,
+            balance: u.balance + amount
+          };
+          if (targetId === user.id) {
+            setUser(updatedUser);
+          }
+          return updatedUser;
+        }
+        return u;
+      }));
+    }
+  };
+
+  const updateUserStats = (gameType: string, won: boolean, amount: number) => {
     if (user && user.id !== "admin") {
       const updatedUser = {
         ...user,
-        balance: user.balance + amount,
+        stats: {
+          ...user.stats,
+          gamesPlayed: user.stats.gamesPlayed + 1,
+          totalWinnings: user.stats.totalWinnings + (won ? amount : 0),
+          totalLosses: user.stats.totalLosses + (won ? 0 : amount),
+          biggestWin: won ? Math.max(user.stats.biggestWin, amount) : user.stats.biggestWin,
+          gameStats: {
+            ...user.stats.gameStats,
+            [gameType]: {
+              wins: (user.stats.gameStats[gameType]?.wins || 0) + (won ? 1 : 0),
+              losses: (user.stats.gameStats[gameType]?.losses || 0) + (won ? 0 : 1),
+              totalWinnings: (user.stats.gameStats[gameType]?.totalWinnings || 0) + (won ? amount : 0),
+              totalLosses: (user.stats.gameStats[gameType]?.totalLosses || 0) + (won ? 0 : amount)
+            }
+          }
+        }
       };
       setUser(updatedUser);
       setUsers(prev => prev.map(u => u.id === user.id ? updatedUser : u));
@@ -119,7 +171,15 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, users, login, register, logout, updateBalance }}>
+    <UserContext.Provider value={{ 
+      user, 
+      users, 
+      login, 
+      register, 
+      logout, 
+      updateBalance,
+      updateUserStats 
+    }}>
       {children}
     </UserContext.Provider>
   );

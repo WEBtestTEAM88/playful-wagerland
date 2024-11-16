@@ -9,12 +9,13 @@ import { Scissors, Hand, Square } from "lucide-react";
 type Choice = "rock" | "paper" | "scissors";
 
 export const RockPaperScissors = () => {
-  const { user, updateBalance } = useUser();
+  const { user, updateBalance, updateUserStats } = useUser();
   const [bet, setBet] = useState(10);
   const [result, setResult] = useState<string | null>(null);
   const [playerChoice, setPlayerChoice] = useState<Choice | null>(null);
   const [computerChoice, setComputerChoice] = useState<Choice | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [stats, setStats] = useState({ wins: 0, losses: 0, draws: 0 });
 
   const choices: Choice[] = ["rock", "paper", "scissors"];
 
@@ -39,6 +40,8 @@ export const RockPaperScissors = () => {
 
     setIsPlaying(true);
     setPlayerChoice(choice);
+    
+    // Only deduct balance if it's not a draw
     updateBalance(-bet);
 
     // Simulate computer thinking
@@ -50,19 +53,25 @@ export const RockPaperScissors = () => {
       if (choice === computerChoice) {
         setResult("Draw!");
         updateBalance(bet); // Return bet on draw
+        setStats(prev => ({ ...prev, draws: prev.draws + 1 }));
       } else if (
         (choice === "rock" && computerChoice === "scissors") ||
         (choice === "paper" && computerChoice === "rock") ||
         (choice === "scissors" && computerChoice === "paper")
       ) {
         setResult("You win!");
-        updateBalance(bet * 2);
+        const winnings = bet * 2;
+        updateBalance(winnings);
+        updateUserStats("rockPaperScissors", true, winnings - bet);
+        setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
         toast({
           title: "Congratulations!",
-          description: `You won ${bet} coins!`,
+          description: `You won $${winnings - bet}!`,
         });
       } else {
         setResult("You lose!");
+        updateUserStats("rockPaperScissors", false, bet);
+        setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
       }
       setIsPlaying(false);
     }, 1000);

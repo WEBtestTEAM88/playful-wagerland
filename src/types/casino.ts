@@ -12,6 +12,16 @@ export interface UserStats {
   totalWinnings: number;
   totalLosses: number;
   biggestWin: number;
+  gameStats: {
+    [key: string]: GameStats;
+  };
+}
+
+export interface GameStats {
+  wins: number;
+  losses: number;
+  totalWinnings: number;
+  totalLosses: number;
 }
 
 export interface InventoryItem {

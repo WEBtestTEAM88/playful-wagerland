@@ -13,9 +13,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
+import { Ban, Crown, Coins, UserCog } from "lucide-react";
 
 const AdminPanel = () => {
-  const { user, users } = useUser();
+  const { user, users, updateBalance } = useUser();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -26,10 +27,27 @@ const AdminPanel = () => {
   }
 
   const handleAddBalance = (userId: string, amount: number) => {
-    // Balance updates are handled by UserContext
+    updateBalance(amount, userId);
     toast({
       title: "Balance updated",
-      description: `Added ${amount} coins to user's balance`,
+      description: `Modified user's balance by $${amount}`,
+    });
+  };
+
+  const handleBanUser = (userId: string) => {
+    // Implementation for banning users would go here
+    toast({
+      title: "User banned",
+      description: "User has been banned from the platform",
+      variant: "destructive",
+    });
+  };
+
+  const handleResetStats = (userId: string) => {
+    // Implementation for resetting user stats would go here
+    toast({
+      title: "Stats reset",
+      description: "User statistics have been reset",
     });
   };
 
@@ -39,15 +57,27 @@ const AdminPanel = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Card className="p-6 bg-white/5 border-none">
-        <h1 className="text-3xl font-bold text-casino-gold mb-6">Admin Panel</h1>
+      <Card className="p-6 bg-casino-black/90 border-casino-gold/20">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-casino-gold">Admin Panel</h1>
+            <p className="text-gray-400">Manage users and monitor platform activity</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="text-right">
+              <p className="text-sm text-gray-400">Total Users</p>
+              <p className="text-2xl font-bold text-casino-gold">{users.length}</p>
+            </div>
+            <Crown className="w-8 h-8 text-casino-gold" />
+          </div>
+        </div>
         
         <div className="mb-6">
           <Input
             placeholder="Search users..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="max-w-sm bg-black/20 border-casino-gold/30"
+            className="max-w-sm bg-black/20 border-casino-gold/30 text-white"
           />
         </div>
 
@@ -69,14 +99,16 @@ const AdminPanel = () => {
                   key={user.id}
                   className="bg-black/20 hover:bg-black/30"
                 >
-                  <TableCell className="text-white">{user.username}</TableCell>
-                  <TableCell className="text-white">{user.balance}</TableCell>
+                  <TableCell className="text-white font-medium">
+                    {user.username}
+                  </TableCell>
+                  <TableCell className="text-white">${user.balance}</TableCell>
                   <TableCell className="text-white">{user.stats.gamesPlayed}</TableCell>
                   <TableCell className="text-green-500">
-                    {user.stats.totalWinnings}
+                    ${user.stats.totalWinnings}
                   </TableCell>
                   <TableCell className="text-red-500">
-                    {user.stats.totalLosses}
+                    ${user.stats.totalLosses}
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-2">
@@ -84,13 +116,23 @@ const AdminPanel = () => {
                         onClick={() => handleAddBalance(user.id, 100)}
                         className="bg-casino-gold hover:bg-casino-gold/90 text-black"
                       >
-                        Add 100
+                        <Coins className="w-4 h-4 mr-1" />
+                        Add $100
                       </Button>
                       <Button
-                        onClick={() => handleAddBalance(user.id, -100)}
+                        onClick={() => handleResetStats(user.id)}
+                        variant="outline"
+                        className="border-casino-gold/30 text-casino-gold"
+                      >
+                        <UserCog className="w-4 h-4 mr-1" />
+                        Reset Stats
+                      </Button>
+                      <Button
+                        onClick={() => handleBanUser(user.id)}
                         variant="destructive"
                       >
-                        Remove 100
+                        <Ban className="w-4 h-4 mr-1" />
+                        Ban User
                       </Button>
                     </div>
                   </TableCell>

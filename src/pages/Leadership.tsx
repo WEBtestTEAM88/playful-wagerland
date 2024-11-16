@@ -13,7 +13,14 @@ import { Trophy, Medal, Award } from "lucide-react";
 const Leadership = () => {
   const { users } = useUser();
 
-  const sortedUsers = [...users].sort((a, b) => b.stats.totalWinnings - a.stats.totalWinnings);
+  // Sort users by total winnings, excluding admin
+  const sortedUsers = [...users]
+    .filter(user => user.id !== "admin")
+    .sort((a, b) => {
+      const aWinnings = a.stats.totalWinnings || 0;
+      const bWinnings = b.stats.totalWinnings || 0;
+      return bWinnings - aWinnings;
+    });
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -52,9 +59,9 @@ const Leadership = () => {
                     </div>
                   </TableCell>
                   <TableCell className="text-white">{user.username}</TableCell>
-                  <TableCell className="text-white">{user.stats.gamesPlayed}</TableCell>
-                  <TableCell className="text-green-500">${user.stats.totalWinnings}</TableCell>
-                  <TableCell className="text-casino-gold">${user.stats.biggestWin}</TableCell>
+                  <TableCell className="text-white">{user.stats.gamesPlayed || 0}</TableCell>
+                  <TableCell className="text-green-500">${user.stats.totalWinnings || 0}</TableCell>
+                  <TableCell className="text-casino-gold">${user.stats.biggestWin || 0}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

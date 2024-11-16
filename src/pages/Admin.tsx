@@ -39,9 +39,9 @@ const AdminPanel = () => {
   };
 
   const handleBanUser = (userId: string) => {
-    // Implementation for banning users
     const targetUser = users.find(u => u.id === userId);
     if (targetUser) {
+      // Here we would typically call an API to ban the user
       toast({
         title: "User banned",
         description: `${targetUser.username} has been banned from the platform`,
@@ -51,9 +51,26 @@ const AdminPanel = () => {
   };
 
   const handleResetStats = (userId: string) => {
-    // Implementation for resetting user stats
     const targetUser = users.find(u => u.id === userId);
     if (targetUser) {
+      // Reset user stats in the context
+      const updatedUsers = users.map(u => {
+        if (u.id === userId) {
+          return {
+            ...u,
+            stats: {
+              gamesPlayed: 0,
+              totalWinnings: 0,
+              totalLosses: 0,
+              biggestWin: 0,
+              gameStats: {}
+            }
+          };
+        }
+        return u;
+      });
+      // Update local storage
+      localStorage.setItem('casinoUsers', JSON.stringify(updatedUsers));
       toast({
         title: "Stats reset",
         description: `Statistics for ${targetUser.username} have been reset`,
@@ -67,7 +84,7 @@ const AdminPanel = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Card className="p-6 bg-casino-black border-casino-gold/20">
+      <Card className="p-6 bg-casino-black/90 border-casino-gold/20">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-3xl font-bold text-casino-gold">Admin Panel</h1>

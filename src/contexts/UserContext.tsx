@@ -132,7 +132,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         if (u.id === targetId) {
           const updatedUser = {
             ...u,
-            balance: u.balance + amount
+            balance: Math.max(0, u.balance + amount)
           };
           if (targetId === user.id) {
             setUser(updatedUser);
@@ -150,10 +150,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         ...user,
         stats: {
           ...user.stats,
-          gamesPlayed: user.stats.gamesPlayed + 1,
-          totalWinnings: user.stats.totalWinnings + (won ? amount : 0),
-          totalLosses: user.stats.totalLosses + (won ? 0 : amount),
-          biggestWin: won ? Math.max(user.stats.biggestWin, amount) : user.stats.biggestWin,
+          gamesPlayed: (user.stats.gamesPlayed || 0) + 1,
+          totalWinnings: (user.stats.totalWinnings || 0) + (won ? amount : 0),
+          totalLosses: (user.stats.totalLosses || 0) + (won ? 0 : amount),
+          biggestWin: won ? Math.max(user.stats.biggestWin || 0, amount) : (user.stats.biggestWin || 0),
           gameStats: {
             ...user.stats.gameStats,
             [gameType]: {
@@ -167,6 +167,12 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       };
       setUser(updatedUser);
       setUsers(prev => prev.map(u => u.id === user.id ? updatedUser : u));
+      
+      // Update localStorage
+      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+      localStorage.setItem('casinoUsers', JSON.stringify(
+        prev => prev.map(u => u.id === user.id ? updatedUser : u)
+      ));
     }
   };
 

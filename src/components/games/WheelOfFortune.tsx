@@ -98,7 +98,7 @@ export const WheelOfFortune = () => {
                 transform: `rotate(${index * (360 / WHEEL_SEGMENTS.length)}deg)`,
               }}
             >
-              <div className="absolute top-4 left-1/2 -translate-x-1/2 text-white font-bold text-lg">
+              <div className="absolute top-4 left-1/2 -translate-x-1/2 text-casino-black font-bold text-2xl shadow-sm">
                 x{segment.multiplier}
               </div>
             </div>

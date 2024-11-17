@@ -82,6 +82,11 @@ export const RockPaperScissors = () => {
       <div className="text-center">
         <h2 className="text-2xl font-bold text-casino-gold mb-2">Rock Paper Scissors</h2>
         <p className="text-sm text-gray-400">Choose your weapon!</p>
+        <div className="mt-2 flex justify-center gap-4 text-sm">
+          <span className="text-casino-green">Wins: {stats.wins}</span>
+          <span className="text-casino-red">Losses: {stats.losses}</span>
+          <span className="text-casino-gold">Draws: {stats.draws}</span>
+        </div>
       </div>
 
       <div className="flex justify-center gap-4">

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { User } from "../types/casino";
 import { toast } from "@/components/ui/use-toast";
+import { saveUser, loadUsers, loadCurrentUser, persistUsers } from "@/utils/userStorage";
 
 interface UserContextType {
   user: User | null;
@@ -14,38 +15,17 @@ interface UserContextType {
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-// Load users and current user from localStorage
-const getInitialUsers = (): User[] => {
-  const savedUsers = localStorage.getItem('casinoUsers');
-  return savedUsers ? JSON.parse(savedUsers) : [];
-};
-
-const getCurrentUser = (): User | null => {
-  const savedUser = localStorage.getItem('currentUser');
-  return savedUser ? JSON.parse(savedUser) : null;
-};
-
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(getCurrentUser());
-  const [users, setUsers] = useState<User[]>(getInitialUsers);
+  const [user, setUser] = useState<User | null>(loadCurrentUser());
+  const [users, setUsers] = useState<User[]>(loadUsers());
 
-  // Save users to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem('casinoUsers', JSON.stringify(users));
+    persistUsers(users);
   }, [users]);
-
-  // Save current user to localStorage whenever it changes
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem('currentUser', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('currentUser');
-    }
-  }, [user]);
 
   const login = async (username: string, password: string) => {
     if (username === "admin" && password === "admin") {
-      const adminUser: User = {
+      const adminUser = {
         id: "admin",
         username: "admin",
         balance: 999999,
@@ -60,6 +40,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         inventory: [],
       };
       setUser(adminUser);
+      saveUser(adminUser);
       toast({
         title: "Welcome Admin!",
         description: "Logged in as administrator",
@@ -70,6 +51,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     const foundUser = users.find(u => u.username === username);
     if (foundUser) {
       setUser(foundUser);
+      saveUser(foundUser);
       toast({
         title: "Welcome back!",
         description: "Successfully logged in to your casino account.",
@@ -110,6 +92,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
     setUsers(prev => [...prev, newUser]);
     setUser(newUser);
+    saveUser(newUser);
     toast({
       title: "Welcome to the Casino!",
       description: "Your account has been created successfully.",
@@ -136,6 +119,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
           };
           if (targetId === user.id) {
             setUser(updatedUser);
+            saveUser(updatedUser);
           }
           return updatedUser;
         }
@@ -166,13 +150,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         }
       };
       setUser(updatedUser);
+      saveUser(updatedUser);
       setUsers(prev => prev.map(u => u.id === user.id ? updatedUser : u));
-      
-      // Update localStorage
-      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-      localStorage.setItem('casinoUsers', JSON.stringify(
-        prev => prev.map(u => u.id === user.id ? updatedUser : u)
-      ));
     }
   };
 

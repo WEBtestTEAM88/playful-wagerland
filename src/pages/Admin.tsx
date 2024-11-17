@@ -19,7 +19,7 @@ const AdminPanel = () => {
   const { user, users, updateBalance } = useUser();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [balanceAmount, setBalanceAmount] = useState<{ [key: string]: number }>({});
+  const [balanceAmounts, setBalanceAmounts] = useState<{ [key: string]: string }>({});
 
   if (!user || user.username !== "admin") {
     navigate("/");
@@ -27,21 +27,20 @@ const AdminPanel = () => {
   }
 
   const handleAddBalance = (userId: string) => {
-    const amount = balanceAmount[userId];
-    if (amount) {
+    const amount = Number(balanceAmounts[userId]);
+    if (!isNaN(amount)) {
       updateBalance(amount, userId);
       toast({
         title: "Balance updated",
         description: `Modified user's balance by $${amount}`,
       });
-      setBalanceAmount(prev => ({ ...prev, [userId]: 0 }));
+      setBalanceAmounts(prev => ({ ...prev, [userId]: "" }));
     }
   };
 
   const handleBanUser = (userId: string) => {
     const targetUser = users.find(u => u.id === userId);
     if (targetUser) {
-      // Here we would typically call an API to ban the user
       toast({
         title: "User banned",
         description: `${targetUser.username} has been banned from the platform`,
@@ -50,36 +49,8 @@ const AdminPanel = () => {
     }
   };
 
-  const handleResetStats = (userId: string) => {
-    const targetUser = users.find(u => u.id === userId);
-    if (targetUser) {
-      // Reset user stats in the context
-      const updatedUsers = users.map(u => {
-        if (u.id === userId) {
-          return {
-            ...u,
-            stats: {
-              gamesPlayed: 0,
-              totalWinnings: 0,
-              totalLosses: 0,
-              biggestWin: 0,
-              gameStats: {}
-            }
-          };
-        }
-        return u;
-      });
-      // Update local storage
-      localStorage.setItem('casinoUsers', JSON.stringify(updatedUsers));
-      toast({
-        title: "Stats reset",
-        description: `Statistics for ${targetUser.username} have been reset`,
-      });
-    }
-  };
-
-  const filteredUsers = users.filter((user) =>
-    user.username.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = users.filter(u => 
+    u.username.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -141,10 +112,10 @@ const AdminPanel = () => {
                     <div className="flex gap-2 items-center">
                       <Input
                         type="number"
-                        value={balanceAmount[user.id] || ""}
-                        onChange={(e) => setBalanceAmount(prev => ({
+                        value={balanceAmounts[user.id] || ""}
+                        onChange={(e) => setBalanceAmounts(prev => ({
                           ...prev,
-                          [user.id]: Number(e.target.value)
+                          [user.id]: e.target.value
                         }))}
                         className="w-24 bg-black/20 border-casino-gold/30 text-white"
                         placeholder="Amount"
@@ -155,14 +126,6 @@ const AdminPanel = () => {
                       >
                         <Coins className="w-4 h-4 mr-1" />
                         Update
-                      </Button>
-                      <Button
-                        onClick={() => handleResetStats(user.id)}
-                        variant="outline"
-                        className="border-casino-gold/30 text-casino-gold hover:bg-casino-gold/10"
-                      >
-                        <Settings className="w-4 h-4 mr-1" />
-                        Reset Stats
                       </Button>
                       <Button
                         onClick={() => handleBanUser(user.id)}

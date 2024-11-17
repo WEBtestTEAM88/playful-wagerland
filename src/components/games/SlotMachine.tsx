@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUser } from "@/contexts/UserContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -16,11 +16,12 @@ const SYMBOLS = [
 ];
 
 export const SlotMachine = () => {
-  const { user, updateBalance } = useUser();
+  const { user, updateBalance, updateUserStats } = useUser();
   const [reels, setReels] = useState([SYMBOLS[0], SYMBOLS[0], SYMBOLS[0]]);
   const [isSpinning, setIsSpinning] = useState(false);
   const [bet, setBet] = useState(10);
   const [lastWin, setLastWin] = useState<number | null>(null);
+  const [stats, setStats] = useState({ wins: 0, losses: 0 });
 
   const spin = () => {
     if (!user) return;
@@ -38,7 +39,6 @@ export const SlotMachine = () => {
     updateBalance(-bet);
     playSpinSound();
 
-    // Simulate spinning animation
     const spinInterval = setInterval(() => {
       setReels([
         SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)],
@@ -47,7 +47,6 @@ export const SlotMachine = () => {
       ]);
     }, 100);
 
-    // Stop spinning after 2 seconds and calculate winnings
     setTimeout(() => {
       clearInterval(spinInterval);
       const finalReels = [
@@ -58,15 +57,21 @@ export const SlotMachine = () => {
       setReels(finalReels);
       setIsSpinning(false);
 
-      // Check for wins
       if (finalReels[0].name === finalReels[1].name && finalReels[1].name === finalReels[2].name) {
         const winnings = bet * finalReels[0].multiplier;
         setLastWin(winnings);
         updateBalance(winnings);
+        setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
+        updateUserStats("slotMachine", true, winnings);
+        playWinSound();
         toast({
           title: "Jackpot!",
           description: `You won $${winnings}!`,
         });
+      } else {
+        setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
+        updateUserStats("slotMachine", false, bet);
+        playLoseSound();
       }
     }, 2000);
   };
@@ -76,6 +81,10 @@ export const SlotMachine = () => {
       <div className="text-center">
         <h2 className="text-2xl font-bold text-casino-gold mb-2">Slot Machine</h2>
         <p className="text-sm text-gray-400">Match 3 symbols to win!</p>
+        <div className="mt-2 flex justify-center gap-4 text-sm">
+          <span className="text-green-500">Wins: {stats.wins}</span>
+          <span className="text-red-500">Losses: {stats.losses}</span>
+        </div>
       </div>
 
       <div className="relative">

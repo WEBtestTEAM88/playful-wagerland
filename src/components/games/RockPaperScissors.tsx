@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { Scissors, Hand, Square } from "lucide-react";
+import { playWinSound, playLoseSound, playSpinSound } from "@/utils/sounds";
 
 type Choice = "rock" | "paper" | "scissors";
 
@@ -62,6 +63,7 @@ export const RockPaperScissors = () => {
         setResult("You win!");
         const winnings = bet * 2;
         updateBalance(winnings);
+        playWinSound();
         updateUserStats("rockPaperScissors", true, winnings - bet);
         setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
         toast({
@@ -71,6 +73,7 @@ export const RockPaperScissors = () => {
       } else {
         setResult("You lose!");
         updateUserStats("rockPaperScissors", false, bet);
+        playLoseSound();
         setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
       }
       setIsPlaying(false);

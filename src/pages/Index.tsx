@@ -8,21 +8,22 @@ import { LuckyDice } from "@/components/games/LuckyDice";
 import { Blackjack } from "@/components/games/Blackjack";
 import { WheelOfFortune } from "@/components/games/WheelOfFortune";
 import { HighLow } from "@/components/games/HighLow";
+import { RockPaperScissors } from "@/components/games/RockPaperScissors";
 
 const Index = () => {
   const { user } = useUser();
 
   if (!user) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 min-h-screen bg-casino-black">
         <AuthForm />
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-center text-casino-gold mb-8">
+    <div className="container mx-auto px-4 py-8 min-h-screen bg-casino-black">
+      <h1 className="text-4xl font-bold text-center text-casino-gold mb-8 animate-fade-in">
         Welcome to the Casino
       </h1>
       
@@ -35,6 +36,7 @@ const Index = () => {
         <Blackjack />
         <WheelOfFortune />
         <HighLow />
+        <RockPaperScissors />
       </div>
     </div>
   );

@@ -67,8 +67,20 @@ export const DoubleOrNothing = () => {
       </div>
 
       <div className="flex justify-center my-8">
-        <div className={`transform transition-all duration-100 ${isSpinning ? 'animate-[spin_0.5s_linear_infinite]' : ''}`}>
-          <CircleDollarSign className="w-24 h-24 text-casino-gold" />
+        <div 
+          className={`transform transition-transform ${
+            isSpinning ? 'animate-[spin_0.8s_linear_infinite]' : ''
+          }`}
+          style={{
+            perspective: '1000px',
+            transformStyle: 'preserve-3d',
+          }}
+        >
+          <CircleDollarSign 
+            className={`w-24 h-24 text-casino-gold transition-all duration-300 ${
+              isSpinning ? 'shadow-lg shadow-casino-gold/20' : ''
+            }`}
+          />
         </div>
       </div>
 

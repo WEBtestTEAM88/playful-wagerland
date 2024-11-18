@@ -9,9 +9,10 @@ import { Blackjack } from "@/components/games/Blackjack";
 import { WheelOfFortune } from "@/components/games/WheelOfFortune";
 import { HighLow } from "@/components/games/HighLow";
 import { RockPaperScissors } from "@/components/games/RockPaperScissors";
-import { Pool } from "@/components/games/Pool";
+import { DoubleOrNothing } from "@/components/games/DoubleOrNothing";
 import { Bingo } from "@/components/games/Bingo";
 import { VideoPoker } from "@/components/games/VideoPoker";
+import { Trivia } from "@/components/games/Trivia";
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
@@ -50,9 +51,7 @@ const Index = () => {
             </Button>
           </div>
         </div>
-        
-        
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <SlotMachine />
           <Roulette />
@@ -63,9 +62,10 @@ const Index = () => {
           <WheelOfFortune />
           <HighLow />
           <RockPaperScissors />
-          <Pool />
+          <DoubleOrNothing />
           <Bingo />
           <VideoPoker />
+          <Trivia />
         </div>
       </div>
     </div>

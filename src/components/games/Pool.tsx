@@ -10,9 +10,8 @@ export const Pool = () => {
   const [bet, setBet] = useState(10);
   const [isPlaying, setIsPlaying] = useState(false);
   const [stats, setStats] = useState({ wins: 0, losses: 0 });
-  const [pocketedBalls, setPocketedBalls] = useState(0);
 
-  const shoot = () => {
+  const play = () => {
     if (!user) return;
     if (bet > user.balance) {
       toast({
@@ -26,26 +25,25 @@ export const Pool = () => {
     setIsPlaying(true);
     updateBalance(-bet);
 
-    // Simulate pool shot
+    // 50/50 chance
     const success = Math.random() > 0.5;
     if (success) {
-      setPocketedBalls(prev => prev + 1);
       const winnings = bet * 2;
       updateBalance(winnings);
       setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
-      updateUserStats("pool", true, winnings);
+      updateUserStats("doubleOrNothing", true, winnings);
       playWinSound();
       toast({
-        title: "Nice Shot!",
-        description: `Ball pocketed! You won $${winnings}!`,
+        title: "Congratulations!",
+        description: `You doubled your bet! Won $${winnings}!`,
       });
     } else {
       setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
-      updateUserStats("pool", false, bet);
+      updateUserStats("doubleOrNothing", false, bet);
       playLoseSound();
       toast({
-        title: "Missed!",
-        description: "Better luck next time!",
+        title: "Better luck next time!",
+        description: "You lost your bet.",
         variant: "destructive",
       });
     }
@@ -56,12 +54,11 @@ export const Pool = () => {
   return (
     <Card className="p-6 space-y-6 bg-casino-black/90 border-casino-gold/20">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-casino-gold mb-2">Pool</h2>
-        <p className="text-sm text-gray-400">Take your shot!</p>
+        <h2 className="text-2xl font-bold text-casino-gold mb-2">Double or Nothing</h2>
+        <p className="text-sm text-gray-400">50/50 chance to double your bet!</p>
         <div className="mt-2 flex justify-center gap-4 text-sm">
           <span className="text-green-500">Wins: {stats.wins}</span>
           <span className="text-red-500">Losses: {stats.losses}</span>
-          <span className="text-blue-500">Balls Pocketed: {pocketedBalls}</span>
         </div>
       </div>
 
@@ -78,11 +75,11 @@ export const Pool = () => {
         </div>
 
         <Button
-          onClick={shoot}
+          onClick={play}
           disabled={isPlaying || !user}
           className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-black"
         >
-          Take Shot
+          Double or Nothing
         </Button>
       </div>
 

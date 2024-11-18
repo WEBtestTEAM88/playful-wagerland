@@ -86,8 +86,8 @@ export const RockPaperScissors = () => {
         <h2 className="text-2xl font-bold text-casino-gold mb-2">Rock Paper Scissors</h2>
         <p className="text-sm text-gray-400">Choose your weapon!</p>
         <div className="mt-2 flex justify-center gap-4 text-sm">
-          <span className="text-casino-green">Wins: {stats.wins}</span>
-          <span className="text-casino-red">Losses: {stats.losses}</span>
+          <span className="text-green-500">Wins: {stats.wins}</span>
+          <span className="text-red-500">Losses: {stats.losses}</span>
           <span className="text-casino-gold">Draws: {stats.draws}</span>
         </div>
       </div>
@@ -98,7 +98,9 @@ export const RockPaperScissors = () => {
             key={choice}
             onClick={() => play(choice)}
             disabled={isPlaying || !user}
-            className="bg-casino-gold hover:bg-casino-gold/90 text-casino-black p-6"
+            className={`bg-casino-gold hover:bg-casino-gold/90 text-casino-black p-6 transition-all duration-300 transform hover:scale-110 ${
+              playerChoice === choice ? 'ring-4 ring-casino-gold' : ''
+            }`}
           >
             {getIcon(choice)}
           </Button>
@@ -106,38 +108,44 @@ export const RockPaperScissors = () => {
       </div>
 
       {(playerChoice || computerChoice) && (
-        <div className="flex justify-center items-center gap-8">
+        <div className="flex justify-center items-center gap-8 animate-fade-in">
           <div className="text-center">
             <p className="text-sm text-gray-400 mb-2">You</p>
             {playerChoice && (
-              <div className="text-casino-gold">{getIcon(playerChoice)}</div>
+              <div className="text-casino-gold transform transition-all duration-300">
+                {getIcon(playerChoice)}
+              </div>
             )}
           </div>
-          <div className="text-2xl text-casino-gold">VS</div>
+          <div className="text-2xl font-bold text-casino-gold animate-pulse">VS</div>
           <div className="text-center">
             <p className="text-sm text-gray-400 mb-2">Computer</p>
             {computerChoice && (
-              <div className="text-casino-gold">{getIcon(computerChoice)}</div>
+              <div className="text-casino-gold transform transition-all duration-300">
+                {getIcon(computerChoice)}
+              </div>
             )}
           </div>
         </div>
       )}
 
       {result && (
-        <div className="text-center text-xl font-bold text-casino-gold">
+        <div className="text-center text-xl font-bold text-casino-gold animate-fade-in">
           {result}
         </div>
       )}
 
-      <div>
-        <label className="text-sm text-gray-400 mb-1 block">Bet Amount</label>
-        <Input
-          type="number"
-          min={1}
-          value={bet}
-          onChange={(e) => setBet(Number(e.target.value))}
-          className="bg-casino-black/50 border-casino-gold/30 text-casino-white"
-        />
+      <div className="space-y-4">
+        <div>
+          <label className="text-sm text-gray-400 mb-1 block">Bet Amount</label>
+          <input
+            type="number"
+            min={1}
+            value={bet}
+            onChange={(e) => setBet(Number(e.target.value))}
+            className="w-full bg-casino-black/50 border-casino-gold/30 text-casino-white rounded-md p-2"
+          />
+        </div>
       </div>
 
       {user && (

@@ -45,6 +45,18 @@ export const HighLow = () => {
 
     const currentValue = getCardValue(currentCard!);
     const nextValue = getCardValue(nextCardValue);
+    
+    // Handle equal cards - player gets their bet back
+    if (currentValue === nextValue) {
+      updateBalance(bet);
+      toast({
+        title: "Equal cards!",
+        description: "It's a tie! Your bet has been returned.",
+      });
+      setIsPlaying(false);
+      return;
+    }
+
     const correct = higher ? nextValue > currentValue : nextValue < currentValue;
 
     if (correct) {

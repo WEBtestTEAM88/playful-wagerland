@@ -101,45 +101,71 @@ export const Roulette = () => {
         </div>
       </div>
 
-      {renderRouletteWheel()}
-
-      <div className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm text-gray-400 mb-1 block">Number</label>
-            <Input
-              type="number"
-              min={0}
-              max={36}
-              value={selectedNumber}
-              onChange={(e) => setSelectedNumber(Number(e.target.value))}
-              className="bg-casino-black/50 border-casino-gold/30 text-casino-white"
-            />
-          </div>
-          <div>
-            <label className="text-sm text-gray-400 mb-1 block">Bet Amount</label>
-            <Input
-              type="number"
-              min={1}
-              value={bet}
-              onChange={(e) => setBet(Number(e.target.value))}
-              className="bg-casino-black/50 border-casino-gold/30 text-casino-white"
-            />
-          </div>
-        </div>
-
-        <Button
-          onClick={handleSpin}
-          disabled={isSpinning || !user}
-          className={`w-full ${
-            isSpinning
-              ? "bg-casino-gold/50"
-              : "bg-casino-gold hover:bg-casino-gold/90"
-          } text-casino-black`}
+      <div className="relative w-72 h-72 mx-auto">
+        <div 
+          className="absolute inset-0 rounded-full border-4 border-casino-gold bg-gradient-to-br from-casino-black to-casino-black/80 shadow-lg shadow-casino-gold/20"
+          style={{
+            transform: `rotate(${wheelRotation}deg)`,
+            transition: isSpinning ? 'transform 3s cubic-bezier(0.4, 0, 0.2, 1)' : 'none'
+          }}
         >
-          {isSpinning ? "Spinning..." : "Spin"}
-        </Button>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <CircleDot className="w-16 h-16 text-casino-gold animate-pulse" />
+          </div>
+          {Array.from({ length: 37 }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1 h-4 bg-casino-gold/50"
+              style={{
+                transform: `rotate(${i * (360 / 37)}deg) translateY(-50%)`,
+                transformOrigin: '50% 50%',
+                top: '50%',
+              }}
+            />
+          ))}
+        </div>
+        {lastResult !== null && (
+          <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-casino-gold font-bold text-xl animate-bounce">
+            Last: {lastResult}
+          </div>
+        )}
       </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="text-sm text-gray-400 mb-1 block">Number (0-36)</label>
+          <Input
+            type="number"
+            min={0}
+            max={36}
+            value={selectedNumber}
+            onChange={(e) => setSelectedNumber(Number(e.target.value))}
+            className="bg-casino-black/50 border-casino-gold/30 text-casino-white"
+          />
+        </div>
+        <div>
+          <label className="text-sm text-gray-400 mb-1 block">Bet Amount</label>
+          <Input
+            type="number"
+            min={1}
+            value={bet}
+            onChange={(e) => setBet(Number(e.target.value))}
+            className="bg-casino-black/50 border-casino-gold/30 text-casino-white"
+          />
+        </div>
+      </div>
+
+      <Button
+        onClick={handleSpin}
+        disabled={isSpinning || !user}
+        className={`w-full ${
+          isSpinning
+            ? "bg-casino-gold/50"
+            : "bg-casino-gold hover:bg-casino-gold/90"
+        } text-casino-black`}
+      >
+        {isSpinning ? "Spinning..." : "Spin"}
+      </Button>
 
       {user && (
         <div className="text-center text-sm text-gray-400">

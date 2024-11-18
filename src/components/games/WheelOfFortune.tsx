@@ -6,12 +6,12 @@ import { toast } from "@/components/ui/use-toast";
 import { playWinSound, playSpinSound } from "@/utils/sounds";
 
 const WHEEL_SEGMENTS = [
-  { value: 0, color: "bg-casino-red", multiplier: 0 },
-  { value: 2, color: "bg-casino-gold/80", multiplier: 2 },
-  { value: 5, color: "bg-casino-green", multiplier: 5 },
-  { value: 10, color: "bg-casino-gold", multiplier: 10 },
-  { value: 20, color: "bg-purple-500", multiplier: 20 },
-  { value: 50, color: "bg-pink-500", multiplier: 50 },
+  { value: 0, color: "bg-red-600", multiplier: 0, label: "LOSE" },
+  { value: 2, color: "bg-yellow-500", multiplier: 2, label: "2x" },
+  { value: 3, color: "bg-green-500", multiplier: 3, label: "3x" },
+  { value: 5, color: "bg-blue-500", multiplier: 5, label: "5x" },
+  { value: 10, color: "bg-purple-500", multiplier: 10, label: "10x" },
+  { value: 20, color: "bg-pink-500", multiplier: 20, label: "20x" },
 ];
 
 export const WheelOfFortune = () => {
@@ -20,6 +20,7 @@ export const WheelOfFortune = () => {
   const [rotation, setRotation] = useState(0);
   const [bet, setBet] = useState(10);
   const [stats, setStats] = useState({ wins: 0, losses: 0 });
+  const [lastWin, setLastWin] = useState<number | null>(null);
 
   const spin = () => {
     if (!user) return;
@@ -35,6 +36,7 @@ export const WheelOfFortune = () => {
     setIsSpinning(true);
     updateBalance(-bet);
     playSpinSound();
+    setLastWin(null);
 
     const fullRotations = (Math.floor(Math.random() * 3) + 3) * 360;
     const segmentAngle = 360 / WHEEL_SEGMENTS.length;
@@ -52,6 +54,7 @@ export const WheelOfFortune = () => {
         updateBalance(winnings);
         setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
         updateUserStats("wheelOfFortune", true, winnings - bet);
+        setLastWin(winnings - bet);
         playWinSound();
         toast({
           title: "Congratulations!",
@@ -75,8 +78,8 @@ export const WheelOfFortune = () => {
         <h2 className="text-2xl font-bold text-casino-gold mb-2">Wheel of Fortune</h2>
         <p className="text-sm text-gray-400">Spin to win big!</p>
         <div className="mt-2 flex justify-center gap-4 text-sm">
-          <span className="text-casino-green">Wins: {stats.wins}</span>
-          <span className="text-casino-red">Losses: {stats.losses}</span>
+          <span className="text-green-500">Wins: {stats.wins}</span>
+          <span className="text-red-500">Losses: {stats.losses}</span>
         </div>
       </div>
 
@@ -91,19 +94,26 @@ export const WheelOfFortune = () => {
           {WHEEL_SEGMENTS.map((segment, index) => (
             <div
               key={index}
-              className={`absolute w-1/2 h-1/2 ${segment.color} origin-bottom-right transition-colors duration-300`}
+              className={`absolute w-1/2 h-1/2 ${segment.color} origin-bottom-right`}
               style={{
                 transform: `rotate(${index * (360 / WHEEL_SEGMENTS.length)}deg)`,
               }}
             >
-              <div className="absolute top-6 left-1/2 -translate-x-1/2 text-white font-bold text-4xl drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)]">
-                x{segment.multiplier}
+              <div className="absolute top-8 left-1/2 -translate-x-1/2 text-white font-bold text-3xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
+                {segment.label}
               </div>
             </div>
           ))}
         </div>
-        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-8 bg-casino-gold clip-triangle animate-bounce" />
+        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-8 bg-casino-gold" 
+             style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }} />
       </div>
+
+      {lastWin !== null && (
+        <div className="text-center text-xl font-bold text-green-500 animate-bounce">
+          Won: ${lastWin}
+        </div>
+      )}
 
       <div className="space-y-4">
         <div>

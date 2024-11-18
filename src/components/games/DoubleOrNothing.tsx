@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import { playWinSound, playLoseSound } from "@/utils/sounds";
 
-export const Pool = () => {
+export const DoubleOrNothing = () => {
   const { user, updateBalance, updateUserStats } = useUser();
   const [bet, setBet] = useState(10);
   const [isPlaying, setIsPlaying] = useState(false);

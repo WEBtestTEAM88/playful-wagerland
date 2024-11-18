@@ -1,33 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useUser } from "@/contexts/UserContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import { playWinSound, playLoseSound } from "@/utils/sounds";
-import { Dice1, Dice2, Dice3, Dice4, Dice5, Dice6 } from "lucide-react";
+import { CircleDollarSign } from "lucide-react";
 
 export const DoubleOrNothing = () => {
   const { user, updateBalance, updateUserStats } = useUser();
   const [bet, setBet] = useState(10);
   const [isPlaying, setIsPlaying] = useState(false);
   const [stats, setStats] = useState({ wins: 0, losses: 0 });
-  const [diceRoll, setDiceRoll] = useState(1);
-  const [isRolling, setIsRolling] = useState(false);
-
-  const DiceIcons = [Dice1, Dice2, Dice3, Dice4, Dice5, Dice6];
-  const CurrentDice = DiceIcons[diceRoll - 1];
-
-  const rollDice = () => {
-    setIsRolling(true);
-    const rollInterval = setInterval(() => {
-      setDiceRoll(Math.floor(Math.random() * 6) + 1);
-    }, 100);
-
-    setTimeout(() => {
-      clearInterval(rollInterval);
-      setIsRolling(false);
-    }, 1000);
-  };
+  const [isSpinning, setIsSpinning] = useState(false);
 
   const play = () => {
     if (!user) return;
@@ -41,8 +25,8 @@ export const DoubleOrNothing = () => {
     }
 
     setIsPlaying(true);
+    setIsSpinning(true);
     updateBalance(-bet);
-    rollDice();
 
     setTimeout(() => {
       const success = Math.random() > 0.5;
@@ -67,6 +51,7 @@ export const DoubleOrNothing = () => {
         });
       }
       setIsPlaying(false);
+      setIsSpinning(false);
     }, 1200);
   };
 
@@ -82,8 +67,8 @@ export const DoubleOrNothing = () => {
       </div>
 
       <div className="flex justify-center my-8">
-        <div className={`transform transition-all duration-100 ${isRolling ? 'animate-spin' : ''}`}>
-          <CurrentDice className="w-24 h-24 text-casino-gold" />
+        <div className={`transform transition-all duration-100 ${isSpinning ? 'animate-[spin_0.5s_linear_infinite]' : ''}`}>
+          <CircleDollarSign className="w-24 h-24 text-casino-gold" />
         </div>
       </div>
 

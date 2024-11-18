@@ -6,17 +6,20 @@ import { toast } from "@/components/ui/use-toast";
 import { playWinSound, playLoseSound } from "@/utils/sounds";
 import { useQuery } from "@tanstack/react-query";
 
-interface TriviaQuestion {
-  question: string;
-  correct_answer: string;
-  category: string;
-  difficulty: string;
-}
-
 const fetchQuestions = async () => {
   const response = await fetch("https://opentdb.com/api.php?amount=5&type=boolean");
   const data = await response.json();
-  return data.results;
+  return data.results.map((q: any) => ({
+    ...q,
+    question: decodeHTMLEntities(q.question)
+  }));
+};
+
+// Helper function to decode HTML entities
+const decodeHTMLEntities = (text: string) => {
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = text;
+  return textarea.value;
 };
 
 export const Trivia = () => {

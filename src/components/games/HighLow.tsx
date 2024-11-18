@@ -53,11 +53,11 @@ export const HighLow = () => {
       updateBalance(winnings);
       setStreak(prev => prev + 1);
       setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
-      updateUserStats("highLow", true, winnings - bet);
+      updateUserStats("highLow", true, winnings);
       playWinSound();
       toast({
         title: "Correct!",
-        description: `You won $${winnings - bet}! Streak: ${streak + 1}`,
+        description: `You won $${winnings}! Streak: ${streak + 1}`,
       });
     } else {
       setStreak(0);

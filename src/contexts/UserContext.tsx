@@ -11,6 +11,7 @@ interface UserContextType {
   updateBalance: (amount: number, userId?: string) => void;
   users: User[];
   updateUserStats: (gameType: string, won: boolean, amount: number) => void;
+  declareBankruptcy: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -155,6 +156,22 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const declareBankruptcy = () => {
+    if (user && user.id !== "admin") {
+      const updatedUser = {
+        ...user,
+        balance: 1000
+      };
+      setUser(updatedUser);
+      saveUser(updatedUser);
+      setUsers(prev => prev.map(u => u.id === user.id ? updatedUser : u));
+      toast({
+        title: "Bankruptcy Declared",
+        description: "Your balance has been reset to $1,000",
+      });
+    }
+  };
+
   return (
     <UserContext.Provider value={{ 
       user, 
@@ -163,7 +180,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       register, 
       logout, 
       updateBalance,
-      updateUserStats 
+      updateUserStats,
+      declareBankruptcy 
     }}>
       {children}
     </UserContext.Provider>

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useUser } from "@/contexts/UserContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { playWinSound, playSpinSound } from "@/utils/sounds";
 
@@ -37,7 +36,6 @@ export const WheelOfFortune = () => {
     updateBalance(-bet);
     playSpinSound();
 
-    // Random number of full rotations (3-5) plus the winning segment
     const fullRotations = (Math.floor(Math.random() * 3) + 3) * 360;
     const segmentAngle = 360 / WHEEL_SEGMENTS.length;
     const winningSegmentIndex = Math.floor(Math.random() * WHEEL_SEGMENTS.length);
@@ -72,9 +70,9 @@ export const WheelOfFortune = () => {
   };
 
   return (
-    <Card className="p-6 space-y-6 bg-gradient-to-br from-casino-black to-casino-black/90 border-casino-gold/20 animate-fade-in">
+    <Card className="p-6 space-y-6 bg-casino-black/90 border-casino-gold/20">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-casino-gold mb-2 animate-slide-in">Wheel of Fortune</h2>
+        <h2 className="text-2xl font-bold text-casino-gold mb-2">Wheel of Fortune</h2>
         <p className="text-sm text-gray-400">Spin to win big!</p>
         <div className="mt-2 flex justify-center gap-4 text-sm">
           <span className="text-casino-green">Wins: {stats.wins}</span>
@@ -98,7 +96,7 @@ export const WheelOfFortune = () => {
                 transform: `rotate(${index * (360 / WHEEL_SEGMENTS.length)}deg)`,
               }}
             >
-              <div className="absolute top-6 left-1/2 -translate-x-1/2 text-white font-bold text-3xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]">
+              <div className="absolute top-6 left-1/2 -translate-x-1/2 text-white font-bold text-4xl drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)]">
                 x{segment.multiplier}
               </div>
             </div>
@@ -110,12 +108,12 @@ export const WheelOfFortune = () => {
       <div className="space-y-4">
         <div>
           <label className="text-sm text-gray-400 mb-1 block">Bet Amount</label>
-          <Input
+          <input
             type="number"
             min={1}
             value={bet}
             onChange={(e) => setBet(Number(e.target.value))}
-            className="bg-casino-black/50 border-casino-gold/30 text-casino-white"
+            className="w-full bg-casino-black/50 border-casino-gold/30 text-casino-white rounded-md p-2"
           />
         </div>
 
@@ -126,7 +124,7 @@ export const WheelOfFortune = () => {
             isSpinning
               ? "bg-casino-gold/50"
               : "bg-casino-gold hover:bg-casino-gold/90"
-          } text-casino-black font-bold transition-all duration-300 transform hover:scale-105`}
+          } text-casino-black`}
         >
           {isSpinning ? "Spinning..." : "Spin"}
         </Button>

@@ -9,10 +9,13 @@ import { Blackjack } from "@/components/games/Blackjack";
 import { WheelOfFortune } from "@/components/games/WheelOfFortune";
 import { HighLow } from "@/components/games/HighLow";
 import { RockPaperScissors } from "@/components/games/RockPaperScissors";
+import { Pool } from "@/components/games/Pool";
+import { Bingo } from "@/components/games/Bingo";
+import { VideoPoker } from "@/components/games/VideoPoker";
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
-  const { user, logout } = useUser();
+  const { user, logout, declareBankruptcy } = useUser();
 
   if (!user) {
     return (
@@ -33,6 +36,12 @@ const Index = () => {
             <span className="text-casino-gold">
               Welcome, {user.username}! Balance: ${user.balance}
             </span>
+            <Button
+              onClick={declareBankruptcy}
+              className="bg-yellow-600 hover:bg-yellow-700 text-white"
+            >
+              Declare Bankruptcy
+            </Button>
             <Button 
               onClick={logout}
               className="bg-casino-red hover:bg-casino-red/90 text-white"
@@ -41,6 +50,8 @@ const Index = () => {
             </Button>
           </div>
         </div>
+        
+        
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <SlotMachine />
@@ -52,6 +63,9 @@ const Index = () => {
           <WheelOfFortune />
           <HighLow />
           <RockPaperScissors />
+          <Pool />
+          <Bingo />
+          <VideoPoker />
         </div>
       </div>
     </div>

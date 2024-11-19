@@ -78,7 +78,7 @@ export const TreasureHunt = () => {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-casino-black border-casino-gold">
+    <Card className="p-6 space-y-6 bg-casino-black/90 border-casino-gold/20">
       <CardHeader>
         <CardTitle className="text-center text-casino-gold">Treasure Hunt</CardTitle>
       </CardHeader>
@@ -88,7 +88,7 @@ export const TreasureHunt = () => {
           <Button
             onClick={initializeGame}
             disabled={isPlaying}
-            className="bg-casino-gold hover:bg-casino-gold/80"
+            className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-black"
           >
             <Coins className="mr-2 h-4 w-4" />
             Start Game

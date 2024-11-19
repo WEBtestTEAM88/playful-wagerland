@@ -4,14 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import { playWinSound, playLoseSound } from "@/utils/sounds";
-import { CircleDollarSign } from "lucide-react";
+import { CircleDollarSign, Coins } from "lucide-react";
 
 export const DoubleOrNothing = () => {
   const { user, updateBalance, updateUserStats } = useUser();
   const [bet, setBet] = useState(10);
   const [isPlaying, setIsPlaying] = useState(false);
   const [stats, setStats] = useState({ wins: 0, losses: 0 });
-  const [isSpinning, setIsSpinning] = useState(false);
+  const [showCoins, setShowCoins] = useState(false);
 
   const play = () => {
     if (!user) return;
@@ -25,7 +25,7 @@ export const DoubleOrNothing = () => {
     }
 
     setIsPlaying(true);
-    setIsSpinning(true);
+    setShowCoins(true);
     updateBalance(-bet);
 
     setTimeout(() => {
@@ -51,7 +51,7 @@ export const DoubleOrNothing = () => {
         });
       }
       setIsPlaying(false);
-      setIsSpinning(false);
+      setTimeout(() => setShowCoins(false), 500);
     }, 1200);
   };
 
@@ -66,22 +66,26 @@ export const DoubleOrNothing = () => {
         </div>
       </div>
 
-      <div className="flex justify-center my-8">
-        <div 
-          className={`transform transition-transform ${
-            isSpinning ? 'animate-[spin_0.8s_linear_infinite]' : ''
+      <div className="relative h-32 flex justify-center items-center">
+        {showCoins && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            {[...Array(6)].map((_, i) => (
+              <Coins
+                key={i}
+                className={`absolute text-casino-gold w-8 h-8 animate-[fall_1s_ease-in_forwards] opacity-0`}
+                style={{
+                  left: `${30 + i * 8}%`,
+                  animationDelay: `${i * 0.1}s`,
+                }}
+              />
+            ))}
+          </div>
+        )}
+        <CircleDollarSign 
+          className={`w-24 h-24 text-casino-gold transition-all duration-300 ${
+            isPlaying ? 'animate-bounce' : ''
           }`}
-          style={{
-            perspective: '1000px',
-            transformStyle: 'preserve-3d',
-          }}
-        >
-          <CircleDollarSign 
-            className={`w-24 h-24 text-casino-gold transition-all duration-300 ${
-              isSpinning ? 'shadow-lg shadow-casino-gold/20' : ''
-            }`}
-          />
-        </div>
+        />
       </div>
 
       <div className="space-y-4">

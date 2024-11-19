@@ -81,6 +81,16 @@ export default {
           "0%": { transform: "rotate(0deg)" },
           "100%": { transform: "rotate(360deg)" },
         },
+        "fall": {
+          "0%": { 
+            transform: "translateY(-100%) rotate(0deg)",
+            opacity: "1"
+          },
+          "100%": { 
+            transform: "translateY(100%) rotate(360deg)",
+            opacity: "0"
+          }
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -88,6 +98,7 @@ export default {
         "fade-in": "fade-in 0.3s ease-out",
         "slide-in": "slide-in 0.4s ease-out",
         "spin-slow": "spin-slow 3s linear infinite",
+        "fall": "fall 1s ease-in forwards",
       },
     },
   },

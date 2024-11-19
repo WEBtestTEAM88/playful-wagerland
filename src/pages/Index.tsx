@@ -13,6 +13,8 @@ import { DoubleOrNothing } from "@/components/games/DoubleOrNothing";
 import { Bingo } from "@/components/games/Bingo";
 import { VideoPoker } from "@/components/games/VideoPoker";
 import { Trivia } from "@/components/games/Trivia";
+import { FishHunter } from "@/components/games/FishHunter";
+import { HorseRacing } from "@/components/games/HorseRacing";
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
@@ -66,6 +68,8 @@ const Index = () => {
           <Bingo />
           <VideoPoker />
           <Trivia />
+          <FishHunter />
+          <HorseRacing />
         </div>
       </div>
     </div>

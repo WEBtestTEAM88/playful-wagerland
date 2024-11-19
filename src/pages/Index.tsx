@@ -16,6 +16,8 @@ import { Trivia } from "@/components/games/Trivia";
 import { FishHunter } from "@/components/games/FishHunter";
 import { HorseRacing } from "@/components/games/HorseRacing";
 import { Button } from "@/components/ui/button";
+import { ScratchCards } from "@/components/games/ScratchCards";
+import { TreasureHunt } from "@/components/games/TreasureHunt";
 
 const Index = () => {
   const { user, logout, declareBankruptcy } = useUser();
@@ -72,6 +74,8 @@ const Index = () => {
           <Trivia />
           <FishHunter />
           <HorseRacing />
+          <ScratchCards />
+          <TreasureHunt />
         </div>
       </div>
     </div>

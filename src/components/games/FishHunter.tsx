@@ -117,7 +117,7 @@ export const FishHunter = () => {
   }, [bullets]);
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card className="w-full max-w-4xl mx-auto bg-casino-black/90 border-casino-gold/20">
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-center text-casino-gold">
           Fish Hunter
@@ -131,7 +131,7 @@ export const FishHunter = () => {
         <div
           ref={containerRef}
           onClick={handleClick}
-          className="relative w-full h-[400px] bg-blue-900 rounded-lg overflow-hidden cursor-crosshair"
+          className="relative w-full h-[400px] bg-blue-900/50 backdrop-blur-sm rounded-lg overflow-hidden cursor-crosshair border border-casino-gold/20"
           style={{ cursor: isPlaying ? 'crosshair' : 'default' }}
         >
           {fishes.map(fish => (
@@ -154,7 +154,7 @@ export const FishHunter = () => {
           ))}
           {!isPlaying && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-              <Button onClick={startGame} className="bg-casino-gold hover:bg-yellow-600">
+              <Button onClick={startGame} className="bg-casino-gold hover:bg-yellow-600 text-black">
                 Play ($10)
               </Button>
             </div>

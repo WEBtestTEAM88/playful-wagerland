@@ -15,11 +15,15 @@ export const Bingo = () => {
   const [drawnNumbers, setDrawnNumbers] = useState<number[]>([]);
 
   useEffect(() => {
-    // Generate random card numbers
-    const newNumbers = Array.from({ length: 25 }, () => 
-      Math.floor(Math.random() * 75) + 1
-    );
-    setNumbers(newNumbers);
+    // Generate random card numbers ensuring no duplicates
+    const generateUniqueNumbers = () => {
+      const nums = new Set<number>();
+      while (nums.size < 25) {
+        nums.add(Math.floor(Math.random() * 75) + 1);
+      }
+      return Array.from(nums);
+    };
+    setNumbers(generateUniqueNumbers());
   }, []);
 
   const selectNumber = (number: number) => {
@@ -52,14 +56,16 @@ export const Bingo = () => {
     setIsPlaying(true);
     updateBalance(-bet);
 
-    // Draw 5 random numbers
-    const drawn = Array.from({ length: 5 }, () => 
-      Math.floor(Math.random() * 75) + 1
-    );
-    setDrawnNumbers(drawn);
+    // Draw 5 unique random numbers
+    const drawn = new Set<number>();
+    while (drawn.size < 5) {
+      drawn.add(Math.floor(Math.random() * 75) + 1);
+    }
+    const drawnArray = Array.from(drawn);
+    setDrawnNumbers(drawnArray);
 
     // Check matches
-    const matches = selectedNumbers.filter(n => drawn.includes(n)).length;
+    const matches = selectedNumbers.filter(n => drawnArray.includes(n)).length;
     let winnings = 0;
 
     if (matches >= 3) {
@@ -67,11 +73,11 @@ export const Bingo = () => {
       winnings = bet * multiplier;
       updateBalance(winnings);
       setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
-      updateUserStats("bingo", true, winnings);
+      updateUserStats("bingo", true, winnings - bet);
       playWinSound();
       toast({
         title: "Bingo!",
-        description: `${matches} matches! You won $${winnings}!`,
+        description: `${matches} matches! You won $${winnings - bet}!`,
       });
     } else {
       setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
@@ -88,10 +94,11 @@ export const Bingo = () => {
       setIsPlaying(false);
       setSelectedNumbers([]);
       setDrawnNumbers([]);
-      const newNumbers = Array.from({ length: 25 }, () => 
-        Math.floor(Math.random() * 75) + 1
-      );
-      setNumbers(newNumbers);
+      const newNumbers = new Set<number>();
+      while (newNumbers.size < 25) {
+        newNumbers.add(Math.floor(Math.random() * 75) + 1);
+      }
+      setNumbers(Array.from(newNumbers));
     }, 3000);
   };
 

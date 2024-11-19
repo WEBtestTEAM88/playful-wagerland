@@ -22,7 +22,7 @@ const Index = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-casino-black flex items-center justify-center px-4">
+      <div className="min-h-screen bg-casino-black flex items-center justify-center p-4">
         <AuthForm />
       </div>
     );
@@ -31,30 +31,32 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-casino-black">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-casino-gold animate-fade-in">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
+          <h1 className="text-3xl sm:text-4xl font-bold text-casino-gold animate-fade-in text-center sm:text-left">
             Welcome to the Casino
           </h1>
-          <div className="flex items-center gap-4">
-            <span className="text-casino-gold">
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <span className="text-casino-gold text-center">
               Welcome, {user.username}! Balance: ${user.balance}
             </span>
-            <Button
-              onClick={declareBankruptcy}
-              className="bg-yellow-600 hover:bg-yellow-700 text-white"
-            >
-              Declare Bankruptcy
-            </Button>
-            <Button 
-              onClick={logout}
-              className="bg-casino-red hover:bg-casino-red/90 text-white"
-            >
-              Logout
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                onClick={declareBankruptcy}
+                className="bg-yellow-600 hover:bg-yellow-700 text-white"
+              >
+                Bankruptcy
+              </Button>
+              <Button 
+                onClick={logout}
+                className="bg-casino-red hover:bg-casino-red/90 text-white"
+              >
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           <SlotMachine />
           <Roulette />
           <CardFlip />

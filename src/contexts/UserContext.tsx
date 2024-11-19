@@ -5,8 +5,7 @@ import { saveUser, loadUsers, loadCurrentUser, persistUsers } from "@/utils/user
 
 interface UserContextType {
   user: User | null;
-  login: (username: string, password: string) => Promise<void>;
-  register: (username: string, password: string) => Promise<void>;
+  login: (username: string) => Promise<void>;
   logout: () => void;
   updateBalance: (amount: number, userId?: string) => void;
   users: User[];
@@ -20,12 +19,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(loadCurrentUser());
   const [users, setUsers] = useState<User[]>(loadUsers());
 
-  useEffect(() => {
-    persistUsers(users);
-  }, [users]);
-
-  const login = async (username: string, password: string) => {
-    if (username === "admin" && password === "admin") {
+  const login = async (username: string) => {
+    if (username === "admin") {
       const adminUser = {
         id: "admin",
         username: "admin",
@@ -49,54 +44,29 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
-    const foundUser = users.find(u => u.username === username);
-    if (foundUser) {
-      setUser(foundUser);
-      saveUser(foundUser);
-      toast({
-        title: "Welcome back!",
-        description: "Successfully logged in to your casino account.",
-      });
-    } else {
-      toast({
-        title: "Error",
-        description: "Invalid username or password",
-        variant: "destructive",
-      });
+    let foundUser = users.find(u => u.username === username);
+    if (!foundUser) {
+      foundUser = {
+        id: crypto.randomUUID(),
+        username,
+        balance: 1000,
+        createdAt: new Date(),
+        stats: {
+          gamesPlayed: 0,
+          totalWinnings: 0,
+          totalLosses: 0,
+          biggestWin: 0,
+          gameStats: {}
+        },
+        inventory: [],
+      };
+      setUsers(prev => [...prev, foundUser!]);
     }
-  };
-
-  const register = async (username: string, password: string) => {
-    if (users.some(u => u.username === username)) {
-      toast({
-        title: "Error",
-        description: "Username already exists",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const newUser: User = {
-      id: crypto.randomUUID(),
-      username,
-      balance: 1000,
-      createdAt: new Date(),
-      stats: {
-        gamesPlayed: 0,
-        totalWinnings: 0,
-        totalLosses: 0,
-        biggestWin: 0,
-        gameStats: {}
-      },
-      inventory: [],
-    };
-
-    setUsers(prev => [...prev, newUser]);
-    setUser(newUser);
-    saveUser(newUser);
+    setUser(foundUser);
+    saveUser(foundUser);
     toast({
-      title: "Welcome to the Casino!",
-      description: "Your account has been created successfully.",
+      title: "Welcome!",
+      description: "Successfully logged in to your casino account.",
     });
   };
 
@@ -177,7 +147,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       user, 
       users, 
       login, 
-      register, 
       logout, 
       updateBalance,
       updateUserStats,

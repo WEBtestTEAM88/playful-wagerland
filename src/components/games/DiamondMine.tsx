@@ -54,16 +54,21 @@ export const DiamondMine = () => {
 
       if (finalReels[0].name === finalReels[1].name && finalReels[1].name === finalReels[2].name) {
         const winnings = bet * finalReels[0].multiplier;
-        updateBalance(winnings);
+        updateBalance(winnings); // Only add winnings, bet was already deducted
         setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
         playWinSound();
         toast({
           title: "Winner!",
-          description: `You won $${winnings}!`,
+          description: `You won $${winnings - bet}!`, // Show net winnings
         });
       } else {
         setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
         playLoseSound();
+        toast({
+          title: "Try again!",
+          description: "Better luck next time!",
+          variant: "destructive",
+        });
       }
     }, 2000);
   };

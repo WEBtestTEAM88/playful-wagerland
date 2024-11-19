@@ -19,7 +19,7 @@ export const WheelOfFortune = () => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [bet, setBet] = useState(10);
-  const [winningSegment, setWinningSegment] = useState<number | null>(null);
+  const [currentSegment, setCurrentSegment] = useState(0);
 
   const handleSpin = () => {
     if (!user) {
@@ -40,28 +40,27 @@ export const WheelOfFortune = () => {
       return;
     }
 
-    // Deduct bet amount immediately
+    // Deduct bet immediately
     updateBalance(-bet);
     setIsSpinning(true);
     playSpinSound();
 
-    // Calculate final rotation
-    const spinDuration = 5000; // 5 seconds
+    // Calculate spin result
+    const spinDuration = 5000;
     const minSpins = 5;
     const maxSpins = 8;
     const randomSpins = Math.floor(Math.random() * (maxSpins - minSpins + 1)) + minSpins;
     const segmentAngle = 360 / SEGMENTS.length;
     const randomSegment = Math.floor(Math.random() * SEGMENTS.length);
-    const targetRotation = (randomSpins * 360) + (randomSegment * segmentAngle);
+    const finalRotation = rotation + (randomSpins * 360) + (randomSegment * segmentAngle);
     
-    setRotation(targetRotation);
-    setWinningSegment(null);
+    setRotation(finalRotation);
+    setCurrentSegment(randomSegment);
 
-    // Handle win/lose after spin
+    // Handle result after spin
     setTimeout(() => {
       setIsSpinning(false);
       const segment = SEGMENTS[randomSegment];
-      setWinningSegment(randomSegment);
 
       if (segment.value > 0) {
         const winAmount = bet * segment.value;
@@ -69,7 +68,7 @@ export const WheelOfFortune = () => {
         playWinSound();
         toast({
           title: "Congratulations!",
-          description: `You won $${winAmount - bet}!`,
+          description: `You won ${segment.label} - $${winAmount}!`,
         });
       } else {
         toast({
@@ -82,7 +81,7 @@ export const WheelOfFortune = () => {
   };
 
   return (
-    <Card className="p-6 space-y-6 bg-casino-black text-casino-white border-casino-gold/20">
+    <Card className="p-6 space-y-6 bg-casino-black/90 border-casino-gold/20">
       <div className="text-center">
         <h2 className="text-2xl font-bold text-casino-gold mb-2">Wheel of Fortune</h2>
         <p className="text-sm text-gray-400">Spin to win up to 20x your bet!</p>
@@ -91,7 +90,7 @@ export const WheelOfFortune = () => {
       <div className="relative w-64 h-64 mx-auto">
         {/* Wheel */}
         <div
-          className="absolute inset-0 rounded-full border-4 border-casino-gold overflow-hidden transition-transform duration-[5000ms] ease-out"
+          className="absolute inset-0 rounded-full border-4 border-casino-gold overflow-hidden transition-all duration-[5000ms] ease-out"
           style={{
             transform: `rotate(${rotation}deg)`,
           }}
@@ -105,7 +104,7 @@ export const WheelOfFortune = () => {
               }}
             >
               <div 
-                className="absolute top-6 left-1/2 -translate-x-1/2 text-white font-bold text-xl"
+                className="absolute top-6 left-1/2 -translate-x-1/2 text-white font-bold text-xl whitespace-nowrap"
                 style={{ 
                   transform: `rotate(${-index * (360 / SEGMENTS.length)}deg)`,
                   textShadow: '2px 2px 4px rgba(0,0,0,0.5)'
@@ -117,7 +116,10 @@ export const WheelOfFortune = () => {
           ))}
         </div>
 
-        {/* Pointer */}
+        {/* Center point and pointer */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-4 h-4 bg-casino-gold rounded-full z-20" />
+        </div>
         <div 
           className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-8 bg-casino-gold z-10"
           style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}

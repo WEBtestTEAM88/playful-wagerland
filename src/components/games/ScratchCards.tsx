@@ -71,7 +71,7 @@ export const ScratchCards = () => {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-casino-black border-casino-gold">
+    <Card className="p-6 space-y-6 bg-casino-black/90 border-casino-gold/20">
       <CardHeader>
         <CardTitle className="text-center text-casino-gold">Scratch Cards</CardTitle>
       </CardHeader>

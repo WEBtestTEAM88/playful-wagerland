@@ -3,25 +3,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/contexts/UserContext";
 import { toast } from "sonner";
-import { Coins, Diamond, Sparkles } from "lucide-react";
+import { Coins, Sparkles } from "lucide-react";
 import { playWinSound, playLoseSound } from "@/utils/sounds";
 
 const SCRATCH_PRICES = {
   basic: 50,
   silver: 100,
   gold: 200,
-  diamond: 500,
-  sapphire: 1000,
-  ruby: 2000,
 };
 
 const PRIZE_MULTIPLIERS = {
   basic: [0, 0, 0.5, 1, 1.5],
   silver: [0, 0.5, 1, 1.5, 2],
   gold: [0, 1, 1.5, 2, 3],
-  diamond: [0, 1.5, 2, 3, 4],
-  sapphire: [0, 2, 3, 4, 5],
-  ruby: [0.5, 1, 2, 3, 5, 10],
 };
 
 type CardType = keyof typeof SCRATCH_PRICES;
@@ -34,15 +28,11 @@ export const ScratchCards = () => {
   const [prizes, setPrizes] = useState<number[]>([]);
 
   const getGridSize = (type: CardType) => {
-    if (type === "basic" || type === "silver") return 9;
-    if (type === "gold") return 12;
-    if (type === "diamond") return 16;
-    if (type === "sapphire") return 25;
-    return 49; // ruby (7x7)
+    return 9; // All cards now use 3x3 grid
   };
 
-  const getMaxScratches = (type: CardType) => {
-    return type === "ruby" ? 5 : 3;
+  const getMaxScratches = () => {
+    return 3; // All cards now have 3 scratches
   };
 
   const handlePurchaseCard = (type: CardType) => {
@@ -71,7 +61,7 @@ export const ScratchCards = () => {
   const handleScratch = (index: number) => {
     if (!isScratching || scratchedAreas.includes(index)) return;
 
-    const maxScratches = getMaxScratches(currentCard);
+    const maxScratches = getMaxScratches();
     if (scratchedAreas.length >= maxScratches) return;
 
     const newScratchedAreas = [...scratchedAreas, index];
@@ -92,14 +82,6 @@ export const ScratchCards = () => {
         toast.error("Better luck next time!");
       }
     }
-  };
-
-  const getGridCols = (type: CardType) => {
-    if (type === "basic" || type === "silver") return "grid-cols-3";
-    if (type === "gold") return "grid-cols-4";
-    if (type === "diamond") return "grid-cols-4";
-    if (type === "sapphire") return "grid-cols-5";
-    return "grid-cols-7"; // ruby
   };
 
   return (
@@ -133,32 +115,9 @@ export const ScratchCards = () => {
                 Gold ($200)
               </Button>
             </div>
-            <div className="grid grid-cols-3 gap-2">
-              <Button
-                onClick={() => handlePurchaseCard("diamond")}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold"
-              >
-                <Diamond className="mr-2 h-4 w-4" />
-                Diamond ($500)
-              </Button>
-              <Button
-                onClick={() => handlePurchaseCard("sapphire")}
-                className="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold"
-              >
-                <Diamond className="mr-2 h-4 w-4" />
-                Sapphire ($1K)
-              </Button>
-              <Button
-                onClick={() => handlePurchaseCard("ruby")}
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold"
-              >
-                <Diamond className="mr-2 h-4 w-4" />
-                Ruby ($2K)
-              </Button>
-            </div>
           </div>
         ) : (
-          <div className={`grid ${getGridCols(currentCard)} gap-1 md:gap-2`}>
+          <div className="grid grid-cols-3 gap-1 md:gap-2">
             {Array(getGridSize(currentCard))
               .fill(0)
               .map((_, index) => (

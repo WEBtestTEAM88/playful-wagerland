@@ -18,6 +18,7 @@ import { HorseRacing } from "@/components/games/HorseRacing";
 import { Button } from "@/components/ui/button";
 import { ScratchCards } from "@/components/games/ScratchCards";
 import { TreasureHunt } from "@/components/games/TreasureHunt";
+import { Minesweeper } from "@/components/games/Minesweeper";
 
 const Index = () => {
   const { user, logout, declareBankruptcy } = useUser();
@@ -76,6 +77,7 @@ const Index = () => {
           <HorseRacing />
           <ScratchCards />
           <TreasureHunt />
+          <Minesweeper />
         </div>
       </div>
     </div>

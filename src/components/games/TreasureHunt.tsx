@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/contexts/UserContext";
 import { toast } from "sonner";
-import { Coins, Bomb, Diamond } from "lucide-react";
+import { Diamond, Bomb } from "lucide-react";
 import { playWinSound, playLoseSound } from "@/utils/sounds";
 
 const GRID_SIZE = 5;
@@ -71,7 +71,7 @@ export const TreasureHunt = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex justify-between items-center mb-4">
-          <div className="space-x-2">
+          <div className="flex items-center space-x-2">
             <Button
               onClick={() => setBetAmount(Math.max(10, betAmount - 10))}
               disabled={isPlaying || betAmount <= 10}

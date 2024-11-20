@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { useUser } from "@/contexts/UserContext";
 import { toast } from "sonner";
-import { Bomb, Flag } from "lucide-react";
 import { playWinSound, playLoseSound } from "@/utils/sounds";
+import { MinesweeperControls } from "./minesweeper/MinesweeperControls";
+import { MinesweeperGrid } from "./minesweeper/MinesweeperGrid";
 
 const GRID_SIZES = {
   easy: { size: 8, mines: 10 },
@@ -13,7 +13,7 @@ const GRID_SIZES = {
 };
 
 type Difficulty = keyof typeof GRID_SIZES;
-type CellContent = "hidden" | "mine" | "empty" | number;
+type CellContent = "mine" | "empty" | number;
 
 export const Minesweeper = () => {
   const { user, updateBalance, updateUserStats } = useUser();
@@ -33,12 +33,10 @@ export const Minesweeper = () => {
     updateBalance(-betAmount);
     const { size, mines } = GRID_SIZES[difficulty];
     
-    // Initialize empty grid
-    const newGrid: CellContent[][] = Array(size).fill(null).map(() => 
-      Array(size).fill("empty")
-    );
+    const newGrid: CellContent[][] = Array(size)
+      .fill(null)
+      .map(() => Array(size).fill("empty"));
     
-    // Place mines
     let minesPlaced = 0;
     while (minesPlaced < mines) {
       const x = Math.floor(Math.random() * size);
@@ -49,7 +47,6 @@ export const Minesweeper = () => {
       }
     }
     
-    // Calculate numbers
     for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
         if (newGrid[y][x] !== "mine") {
@@ -78,22 +75,18 @@ export const Minesweeper = () => {
     const newRevealed = revealed.map(row => [...row]);
     
     if (grid[y][x] === "mine") {
-      // Game Over
       setIsPlaying(false);
       updateUserStats("minesweeper", false, betAmount);
       playLoseSound();
       toast.error("Boom! Game Over!");
-      // Reveal all mines
       grid.forEach((row, i) => {
         row.forEach((cell, j) => {
           if (cell === "mine") newRevealed[i][j] = true;
         });
       });
     } else {
-      // Reveal clicked cell and neighbors if empty
       revealCell(y, x, newRevealed);
       
-      // Check win condition
       const unrevealed = newRevealed.flat().filter(cell => !cell).length;
       if (unrevealed === GRID_SIZES[difficulty].mines) {
         setIsPlaying(false);
@@ -137,90 +130,26 @@ export const Minesweeper = () => {
         <CardTitle className="text-center text-casino-gold">Minesweeper</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex justify-between items-center mb-4">
-          <div className="space-x-2">
-            <Button
-              onClick={() => setBetAmount(Math.max(10, betAmount - 10))}
-              disabled={isPlaying || betAmount <= 10}
-              className="bg-casino-red"
-            >
-              -10
-            </Button>
-            <span className="text-casino-gold px-4">Bet: ${betAmount}</span>
-            <Button
-              onClick={() => setBetAmount(betAmount + 10)}
-              disabled={isPlaying || (user?.balance || 0) < betAmount + 10}
-              className="bg-casino-green"
-            >
-              +10
-            </Button>
-          </div>
-          <div className="flex space-x-2">
-            <Button
-              onClick={() => setDifficulty("easy")}
-              disabled={isPlaying}
-              className={`w-24 ${difficulty === "easy" ? "bg-casino-gold" : "bg-gray-700"}`}
-            >
-              Easy
-            </Button>
-            <Button
-              onClick={() => setDifficulty("medium")}
-              disabled={isPlaying}
-              className={`w-24 ${difficulty === "medium" ? "bg-casino-gold" : "bg-gray-700"}`}
-            >
-              Medium
-            </Button>
-            <Button
-              onClick={() => setDifficulty("hard")}
-              disabled={isPlaying}
-              className={`w-24 ${difficulty === "hard" ? "bg-casino-gold" : "bg-gray-700"}`}
-            >
-              Hard
-            </Button>
-          </div>
-          <Button
-            onClick={initializeGame}
-            disabled={isPlaying}
-            className="bg-casino-gold hover:bg-casino-gold/90 text-casino-black"
-          >
-            Start Game
-          </Button>
-        </div>
-        <div className="grid gap-1" style={{ 
-          gridTemplateColumns: `repeat(${GRID_SIZES[difficulty].size}, minmax(0, 1fr))` 
-        }}>
-          {grid.map((row, y) => 
-            row.map((cell, x) => (
-              <button
-                key={`${y}-${x}`}
-                onClick={() => handleCellClick(y, x)}
-                onContextMenu={(e) => handleRightClick(e, y, x)}
-                className={`aspect-square rounded-sm flex items-center justify-center text-sm font-bold transition-all duration-300 ${
-                  revealed[y]?.[x]
-                    ? cell === "mine"
-                      ? "bg-casino-red"
-                      : "bg-casino-gold/20"
-                    : flagged[y]?.[x]
-                    ? "bg-casino-green"
-                    : "bg-gray-700 hover:bg-gray-600"
-                }`}
-                disabled={!isPlaying || revealed[y]?.[x]}
-              >
-                {revealed[y]?.[x] ? (
-                  cell === "mine" ? (
-                    <Bomb className="w-4 h-4" />
-                  ) : cell === 0 ? (
-                    ""
-                  ) : (
-                    cell
-                  )
-                ) : flagged[y]?.[x] ? (
-                  <Flag className="w-4 h-4" />
-                ) : null}
-              </button>
-            ))
-          )}
-        </div>
+        <MinesweeperControls
+          betAmount={betAmount}
+          setBetAmount={setBetAmount}
+          difficulty={difficulty}
+          setDifficulty={setDifficulty}
+          isPlaying={isPlaying}
+          userBalance={user?.balance || 0}
+          onStartGame={initializeGame}
+        />
+        {grid.length > 0 && (
+          <MinesweeperGrid
+            grid={grid}
+            revealed={revealed}
+            flagged={flagged}
+            isPlaying={isPlaying}
+            size={GRID_SIZES[difficulty].size}
+            onCellClick={handleCellClick}
+            onCellRightClick={handleRightClick}
+          />
+        )}
       </CardContent>
     </Card>
   );

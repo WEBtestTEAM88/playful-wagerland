@@ -16,12 +16,12 @@ const SCRATCH_PRICES = {
 };
 
 const PRIZE_MULTIPLIERS = {
-  basic: [0, 0, 1, 1.5, 2],
-  silver: [0, 1, 1.5, 2, 3],
-  gold: [0, 1.5, 2, 3, 5],
-  diamond: [0, 2, 3, 5, 10],
-  sapphire: [0, 3, 5, 10, 20],
-  ruby: [1, 2, 5, 10, 20, 50],
+  basic: [0, 0, 0.5, 1, 1.5],
+  silver: [0, 0.5, 1, 1.5, 2],
+  gold: [0, 1, 1.5, 2, 3],
+  diamond: [0, 1.5, 2, 3, 4],
+  sapphire: [0, 2, 3, 4, 5],
+  ruby: [0.5, 1, 2, 3, 5, 10],
 };
 
 type CardType = keyof typeof SCRATCH_PRICES;
@@ -38,7 +38,7 @@ export const ScratchCards = () => {
     if (type === "gold") return 12;
     if (type === "diamond") return 16;
     if (type === "sapphire") return 25;
-    return 64; // ruby (8x8)
+    return 49; // ruby (7x7)
   };
 
   const getMaxScratches = (type: CardType) => {
@@ -99,7 +99,7 @@ export const ScratchCards = () => {
     if (type === "gold") return "grid-cols-4";
     if (type === "diamond") return "grid-cols-4";
     if (type === "sapphire") return "grid-cols-5";
-    return "grid-cols-8"; // ruby
+    return "grid-cols-7"; // ruby
   };
 
   return (
@@ -109,7 +109,7 @@ export const ScratchCards = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         {!isScratching ? (
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 justify-items-center">
             <Button
               onClick={() => handlePurchaseCard("basic")}
               className="w-40 bg-casino-gold hover:bg-casino-gold/80 text-black font-semibold"
@@ -154,14 +154,14 @@ export const ScratchCards = () => {
             </Button>
           </div>
         ) : (
-          <div className={`grid ${getGridCols(currentCard)} gap-2`}>
+          <div className={`grid ${getGridCols(currentCard)} gap-1 md:gap-2`}>
             {Array(getGridSize(currentCard))
               .fill(0)
               .map((_, index) => (
                 <button
                   key={index}
                   onClick={() => handleScratch(index)}
-                  className={`aspect-square rounded-md transition-all duration-300 ${
+                  className={`aspect-square rounded-md transition-all duration-300 text-xs md:text-sm ${
                     scratchedAreas.includes(index)
                       ? "bg-casino-gold text-black"
                       : "bg-gray-700 hover:bg-gray-600"

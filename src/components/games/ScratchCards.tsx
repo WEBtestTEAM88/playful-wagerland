@@ -3,28 +3,45 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/contexts/UserContext";
 import { toast } from "sonner";
-import { Coins, Sparkles } from "lucide-react";
+import { Coins, Diamond, Sparkles } from "lucide-react";
+import { playWinSound, playLoseSound } from "@/utils/sounds";
 
 const SCRATCH_PRICES = {
   basic: 5,
   silver: 10,
   gold: 20,
+  diamond: 50,
+  sapphire: 100,
+  ruby: 200,
 };
 
 const PRIZE_MULTIPLIERS = {
   basic: [0, 0, 0, 1, 1.5, 2],
   silver: [0, 0, 1, 1.5, 2, 3],
   gold: [0, 1, 1.5, 2, 3, 5],
+  diamond: [0, 2, 3, 4, 5, 10],
+  sapphire: [0, 3, 4, 5, 10, 20],
+  ruby: [1, 2, 5, 10, 20, 50],
 };
+
+type CardType = keyof typeof SCRATCH_PRICES;
 
 export const ScratchCards = () => {
   const { user, updateBalance, updateUserStats } = useUser();
   const [isScratching, setIsScratching] = useState(false);
   const [scratchedAreas, setScratchedAreas] = useState<number[]>([]);
-  const [currentCard, setCurrentCard] = useState<"basic" | "silver" | "gold">("basic");
+  const [currentCard, setCurrentCard] = useState<CardType>("basic");
   const [prizes, setPrizes] = useState<number[]>([]);
 
-  const handlePurchaseCard = (type: "basic" | "silver" | "gold") => {
+  const getGridSize = (type: CardType) => {
+    if (type === "basic" || type === "silver") return 9;
+    if (type === "gold") return 12;
+    if (type === "diamond") return 16;
+    if (type === "sapphire") return 20;
+    return 25; // ruby
+  };
+
+  const handlePurchaseCard = (type: CardType) => {
     if (!user) return;
     
     if (user.balance < SCRATCH_PRICES[type]) {
@@ -37,8 +54,8 @@ export const ScratchCards = () => {
     setIsScratching(true);
     setScratchedAreas([]);
     
-    // Generate random prizes
-    const newPrizes = Array(9)
+    const gridSize = getGridSize(type);
+    const newPrizes = Array(gridSize)
       .fill(0)
       .map(() => {
         const multiplier = PRIZE_MULTIPLIERS[type][Math.floor(Math.random() * PRIZE_MULTIPLIERS[type].length)];
@@ -53,21 +70,31 @@ export const ScratchCards = () => {
     const newScratchedAreas = [...scratchedAreas, index];
     setScratchedAreas(newScratchedAreas);
 
-    if (newScratchedAreas.length === 3) {
+    const requiredScratches = Math.min(5, getGridSize(currentCard) / 3);
+    
+    if (newScratchedAreas.length === requiredScratches) {
       setIsScratching(false);
-      const totalWin = prizes[newScratchedAreas[0]] + 
-                      prizes[newScratchedAreas[1]] + 
-                      prizes[newScratchedAreas[2]];
+      const totalWin = newScratchedAreas.reduce((sum, idx) => sum + prizes[idx], 0);
       
       if (totalWin > 0) {
         updateBalance(totalWin);
-        updateUserStats("scratchcards", true, totalWin);
+        updateUserStats("scratchcards", true, totalWin - SCRATCH_PRICES[currentCard]);
+        playWinSound();
         toast.success(`You won $${totalWin}!`);
       } else {
         updateUserStats("scratchcards", false, SCRATCH_PRICES[currentCard]);
+        playLoseSound();
         toast.error("Better luck next time!");
       }
     }
+  };
+
+  const getGridCols = (type: CardType) => {
+    if (type === "basic" || type === "silver") return "grid-cols-3";
+    if (type === "gold") return "grid-cols-4";
+    if (type === "diamond") return "grid-cols-4";
+    if (type === "sapphire") return "grid-cols-5";
+    return "grid-cols-5"; // ruby
   };
 
   return (
@@ -77,7 +104,7 @@ export const ScratchCards = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         {!isScratching ? (
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <Button
               onClick={() => handlePurchaseCard("basic")}
               className="bg-casino-gold hover:bg-casino-gold/80"
@@ -99,10 +126,31 @@ export const ScratchCards = () => {
               <Sparkles className="mr-2 h-4 w-4" />
               Gold ($20)
             </Button>
+            <Button
+              onClick={() => handlePurchaseCard("diamond")}
+              className="bg-blue-500 hover:bg-blue-600"
+            >
+              <Diamond className="mr-2 h-4 w-4" />
+              Diamond ($50)
+            </Button>
+            <Button
+              onClick={() => handlePurchaseCard("sapphire")}
+              className="bg-blue-700 hover:bg-blue-800"
+            >
+              <Diamond className="mr-2 h-4 w-4" />
+              Sapphire ($100)
+            </Button>
+            <Button
+              onClick={() => handlePurchaseCard("ruby")}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              <Diamond className="mr-2 h-4 w-4" />
+              Ruby ($200)
+            </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-2">
-            {Array(9)
+          <div className={`grid ${getGridCols(currentCard)} gap-2`}>
+            {Array(getGridSize(currentCard))
               .fill(0)
               .map((_, index) => (
                 <button

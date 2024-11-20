@@ -3,6 +3,7 @@ import { useUser } from "@/contexts/UserContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import { playWinSound, playLoseSound } from "@/utils/sounds";
 
 interface Fish {
   id: number;
@@ -107,6 +108,11 @@ export const FishHunter = () => {
   const endGame = () => {
     setIsPlaying(false);
     updateBalance(score);
+    if (score > 0) {
+      playWinSound();
+    } else {
+      playLoseSound();
+    }
     toast.success(`Game Over! You won $${score}!`);
   };
 

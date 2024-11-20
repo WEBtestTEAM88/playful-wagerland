@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/contexts/UserContext";
 import { toast } from "sonner";
 import { Coins, Bomb, Diamond } from "lucide-react";
+import { playWinSound, playLoseSound } from "@/utils/sounds";
 
 const GRID_SIZE = 5;
-const BET_AMOUNT = 10;
 const TREASURE_REWARD = 50;
 const BOMB_COUNT = 3;
 
@@ -15,23 +15,20 @@ export const TreasureHunt = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [grid, setGrid] = useState<Array<"hidden" | "treasure" | "bomb" | "empty">>([]);
   const [revealedCells, setRevealedCells] = useState<number[]>([]);
+  const [betAmount, setBetAmount] = useState(10);
 
   const initializeGame = () => {
-    if (!user || user.balance < BET_AMOUNT) {
+    if (!user || user.balance < betAmount) {
       toast.error("Insufficient balance!");
       return;
     }
 
-    updateBalance(-BET_AMOUNT);
+    updateBalance(-betAmount);
     
-    // Create empty grid
     const newGrid = Array(GRID_SIZE * GRID_SIZE).fill("hidden");
-    
-    // Place treasure
     const treasurePosition = Math.floor(Math.random() * newGrid.length);
     newGrid[treasurePosition] = "treasure";
     
-    // Place bombs
     let bombsPlaced = 0;
     while (bombsPlaced < BOMB_COUNT) {
       const position = Math.floor(Math.random() * newGrid.length);
@@ -54,26 +51,16 @@ export const TreasureHunt = () => {
 
     if (grid[index] === "treasure") {
       setIsPlaying(false);
-      updateBalance(TREASURE_REWARD);
-      updateUserStats("treasurehunt", true, TREASURE_REWARD - BET_AMOUNT);
-      toast.success(`You found the treasure! Won $${TREASURE_REWARD}!`);
+      const winnings = TREASURE_REWARD;
+      updateBalance(winnings);
+      updateUserStats("treasurehunt", true, winnings - betAmount);
+      playWinSound();
+      toast.success(`You found the treasure! Won $${winnings}!`);
     } else if (grid[index] === "bomb") {
       setIsPlaying(false);
-      updateUserStats("treasurehunt", false, BET_AMOUNT);
+      updateUserStats("treasurehunt", false, betAmount);
+      playLoseSound();
       toast.error("Boom! You hit a bomb!");
-    }
-  };
-
-  const getCellContent = (type: string) => {
-    switch (type) {
-      case "treasure":
-        return <Diamond className="w-6 h-6 text-casino-gold" />;
-      case "bomb":
-        return <Bomb className="w-6 h-6 text-casino-red" />;
-      case "empty":
-        return <span className="w-6 h-6" />;
-      default:
-        return <span className="w-6 h-6" />;
     }
   };
 
@@ -84,13 +71,28 @@ export const TreasureHunt = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex justify-between items-center mb-4">
-          <span className="text-casino-gold">Bet: ${BET_AMOUNT}</span>
+          <div className="space-x-2">
+            <Button
+              onClick={() => setBetAmount(Math.max(10, betAmount - 10))}
+              disabled={isPlaying || betAmount <= 10}
+              className="bg-casino-red"
+            >
+              -10
+            </Button>
+            <span className="text-casino-gold px-4">Bet: ${betAmount}</span>
+            <Button
+              onClick={() => setBetAmount(betAmount + 10)}
+              disabled={isPlaying || (user?.balance || 0) < betAmount + 10}
+              className="bg-casino-green"
+            >
+              +10
+            </Button>
+          </div>
           <Button
             onClick={initializeGame}
             disabled={isPlaying}
-            className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-black"
+            className="bg-casino-gold hover:bg-casino-gold/90 text-casino-black"
           >
-            <Coins className="mr-2 h-4 w-4" />
             Start Game
           </Button>
         </div>
@@ -106,7 +108,13 @@ export const TreasureHunt = () => {
                   : "bg-gray-700 hover:bg-gray-600"
               }`}
             >
-              {revealedCells.includes(index) && getCellContent(cell)}
+              {revealedCells.includes(index) && (
+                <div className="text-2xl">
+                  {cell === "treasure" && <Diamond className="text-casino-gold" />}
+                  {cell === "bomb" && <Bomb className="text-casino-red" />}
+                  {cell === "empty" && <span>·</span>}
+                </div>
+              )}
             </button>
           ))}
         </div>

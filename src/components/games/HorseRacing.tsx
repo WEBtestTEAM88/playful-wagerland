@@ -3,6 +3,7 @@ import { useUser } from "@/contexts/UserContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import { playWinSound, playLoseSound } from "@/utils/sounds";
 
 interface Horse {
   id: number;
@@ -76,8 +77,10 @@ export const HorseRacing = () => {
           if (finishedHorse.id === selectedHorse) {
             const winnings = Math.floor(betAmount * finishedHorse.odds);
             updateBalance(winnings);
+            playWinSound();
             toast.success(`You won $${winnings}!`);
           } else {
+            playLoseSound();
             toast.error("Better luck next time!");
           }
         }

@@ -155,25 +155,25 @@ export const Minesweeper = () => {
               +10
             </Button>
           </div>
-          <div className="space-x-2">
+          <div className="flex space-x-2">
             <Button
               onClick={() => setDifficulty("easy")}
               disabled={isPlaying}
-              className={`${difficulty === "easy" ? "bg-casino-gold" : "bg-gray-700"}`}
+              className={`w-24 ${difficulty === "easy" ? "bg-casino-gold" : "bg-gray-700"}`}
             >
               Easy
             </Button>
             <Button
               onClick={() => setDifficulty("medium")}
               disabled={isPlaying}
-              className={`${difficulty === "medium" ? "bg-casino-gold" : "bg-gray-700"}`}
+              className={`w-24 ${difficulty === "medium" ? "bg-casino-gold" : "bg-gray-700"}`}
             >
               Medium
             </Button>
             <Button
               onClick={() => setDifficulty("hard")}
               disabled={isPlaying}
-              className={`${difficulty === "hard" ? "bg-casino-gold" : "bg-gray-700"}`}
+              className={`w-24 ${difficulty === "hard" ? "bg-casino-gold" : "bg-gray-700"}`}
             >
               Hard
             </Button>

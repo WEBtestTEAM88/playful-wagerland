@@ -7,20 +7,20 @@ import { Coins, Diamond, Sparkles } from "lucide-react";
 import { playWinSound, playLoseSound } from "@/utils/sounds";
 
 const SCRATCH_PRICES = {
-  basic: 5,
-  silver: 10,
-  gold: 20,
-  diamond: 50,
-  sapphire: 100,
-  ruby: 200,
+  basic: 50,
+  silver: 100,
+  gold: 200,
+  diamond: 500,
+  sapphire: 1000,
+  ruby: 2000,
 };
 
 const PRIZE_MULTIPLIERS = {
-  basic: [0, 0, 0, 1, 1.5, 2],
-  silver: [0, 0, 1, 1.5, 2, 3],
-  gold: [0, 1, 1.5, 2, 3, 5],
-  diamond: [0, 2, 3, 4, 5, 10],
-  sapphire: [0, 3, 4, 5, 10, 20],
+  basic: [0, 0, 1, 1.5, 2],
+  silver: [0, 1, 1.5, 2, 3],
+  gold: [0, 1.5, 2, 3, 5],
+  diamond: [0, 2, 3, 5, 10],
+  sapphire: [0, 3, 5, 10, 20],
   ruby: [1, 2, 5, 10, 20, 50],
 };
 
@@ -37,8 +37,12 @@ export const ScratchCards = () => {
     if (type === "basic" || type === "silver") return 9;
     if (type === "gold") return 12;
     if (type === "diamond") return 16;
-    if (type === "sapphire") return 20;
-    return 25; // ruby
+    if (type === "sapphire") return 25;
+    return 64; // ruby (8x8)
+  };
+
+  const getMaxScratches = (type: CardType) => {
+    return type === "ruby" ? 5 : 3;
   };
 
   const handlePurchaseCard = (type: CardType) => {
@@ -67,12 +71,13 @@ export const ScratchCards = () => {
   const handleScratch = (index: number) => {
     if (!isScratching || scratchedAreas.includes(index)) return;
 
+    const maxScratches = getMaxScratches(currentCard);
+    if (scratchedAreas.length >= maxScratches) return;
+
     const newScratchedAreas = [...scratchedAreas, index];
     setScratchedAreas(newScratchedAreas);
 
-    const requiredScratches = Math.min(5, getGridSize(currentCard) / 3);
-    
-    if (newScratchedAreas.length === requiredScratches) {
+    if (newScratchedAreas.length === maxScratches) {
       setIsScratching(false);
       const totalWin = newScratchedAreas.reduce((sum, idx) => sum + prizes[idx], 0);
       
@@ -94,7 +99,7 @@ export const ScratchCards = () => {
     if (type === "gold") return "grid-cols-4";
     if (type === "diamond") return "grid-cols-4";
     if (type === "sapphire") return "grid-cols-5";
-    return "grid-cols-5"; // ruby
+    return "grid-cols-8"; // ruby
   };
 
   return (
@@ -110,42 +115,42 @@ export const ScratchCards = () => {
               className="w-40 bg-casino-gold hover:bg-casino-gold/80 text-black font-semibold"
             >
               <Coins className="mr-2 h-4 w-4" />
-              Basic ($5)
+              Basic ($50)
             </Button>
             <Button
               onClick={() => handlePurchaseCard("silver")}
               className="w-40 bg-gray-400 hover:bg-gray-400/80 text-black font-semibold"
             >
               <Coins className="mr-2 h-4 w-4" />
-              Silver ($10)
+              Silver ($100)
             </Button>
             <Button
               onClick={() => handlePurchaseCard("gold")}
               className="w-40 bg-yellow-600 hover:bg-yellow-600/80 text-black font-semibold"
             >
               <Sparkles className="mr-2 h-4 w-4" />
-              Gold ($20)
+              Gold ($200)
             </Button>
             <Button
               onClick={() => handlePurchaseCard("diamond")}
               className="w-40 bg-blue-500 hover:bg-blue-600 text-white font-semibold"
             >
               <Diamond className="mr-2 h-4 w-4" />
-              Diamond ($50)
+              Diamond ($500)
             </Button>
             <Button
               onClick={() => handlePurchaseCard("sapphire")}
               className="w-40 bg-blue-700 hover:bg-blue-800 text-white font-semibold"
             >
               <Diamond className="mr-2 h-4 w-4" />
-              Sapphire ($100)
+              Sapphire ($1000)
             </Button>
             <Button
               onClick={() => handlePurchaseCard("ruby")}
               className="w-40 bg-red-600 hover:bg-red-700 text-white font-semibold"
             >
               <Diamond className="mr-2 h-4 w-4" />
-              Ruby ($200)
+              Ruby ($2000)
             </Button>
           </div>
         ) : (

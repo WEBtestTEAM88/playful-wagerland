@@ -71,7 +71,7 @@ export const TreasureHunt = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex justify-between items-center mb-4">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-4">
             <Button
               onClick={() => setBetAmount(Math.max(10, betAmount - 10))}
               disabled={isPlaying || betAmount <= 10}
@@ -91,7 +91,7 @@ export const TreasureHunt = () => {
           <Button
             onClick={initializeGame}
             disabled={isPlaying}
-            className="bg-casino-gold hover:bg-casino-gold/90 text-casino-black"
+            className="bg-casino-gold hover:bg-casino-gold/90 text-casino-black ml-8"
           >
             Start Game
           </Button>

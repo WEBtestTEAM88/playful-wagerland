@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { ScratchCards } from "@/components/games/ScratchCards";
 import { TreasureHunt } from "@/components/games/TreasureHunt";
 import { Minesweeper } from "@/components/games/Minesweeper";
+import { SimpleWheelOfFortune } from "@/components/games/SimpleWheelOfFortune";
 
 const Index = () => {
   const { user, logout, declareBankruptcy } = useUser();
@@ -67,6 +68,7 @@ const Index = () => {
           <LuckyDice />
           <Blackjack />
           <WheelOfFortune />
+          <SimpleWheelOfFortune />
           <HighLow />
           <RockPaperScissors />
           <DoubleOrNothing />

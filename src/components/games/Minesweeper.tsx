@@ -125,11 +125,11 @@ export const Minesweeper = () => {
   };
 
   return (
-    <Card className="p-6 space-y-6 bg-casino-black/90 border-casino-gold/20">
+    <Card className="w-full max-w-4xl p-6 space-y-6 bg-casino-black/90 border-casino-gold/20">
       <CardHeader>
         <CardTitle className="text-center text-casino-gold">Minesweeper</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
         <MinesweeperControls
           betAmount={betAmount}
           setBetAmount={setBetAmount}

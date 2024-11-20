@@ -13,7 +13,7 @@ const GRID_SIZES = {
 };
 
 type Difficulty = keyof typeof GRID_SIZES;
-type CellContent = "mine" | "empty" | number;
+type CellContent = number | "mine" | "empty";
 
 export const Minesweeper = () => {
   const { user, updateBalance, updateUserStats } = useUser();

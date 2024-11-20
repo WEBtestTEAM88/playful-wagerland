@@ -1,7 +1,9 @@
-import { Bomb, Flag } from "lucide-react";
+import React from "react";
+
+type CellContent = number | "mine" | "empty";
 
 interface MinesweeperGridProps {
-  grid: Array<"mine" | "empty" | number>;
+  grid: CellContent[][];
   revealed: boolean[][];
   flagged: boolean[][];
   isPlaying: boolean;
@@ -10,7 +12,7 @@ interface MinesweeperGridProps {
   onCellRightClick: (e: React.MouseEvent, y: number, x: number) => void;
 }
 
-export const MinesweeperGrid = ({
+export const MinesweeperGrid: React.FC<MinesweeperGridProps> = ({
   grid,
   revealed,
   flagged,
@@ -18,42 +20,29 @@ export const MinesweeperGrid = ({
   size,
   onCellClick,
   onCellRightClick,
-}: MinesweeperGridProps) => {
+}) => {
   return (
-    <div
-      className="grid gap-1"
-      style={{
-        gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))`,
-      }}
-    >
+    <div className="grid gap-1" style={{ gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))` }}>
       {grid.map((row, y) =>
         row.map((cell, x) => (
           <button
             key={`${y}-${x}`}
             onClick={() => onCellClick(y, x)}
             onContextMenu={(e) => onCellRightClick(e, y, x)}
-            className={`aspect-square rounded-sm flex items-center justify-center text-sm font-bold transition-all duration-300 ${
-              revealed[y]?.[x]
+            disabled={!isPlaying || revealed[y][x]}
+            className={`aspect-square rounded-sm flex items-center justify-center text-xs md:text-sm font-bold transition-all duration-300 ${
+              revealed[y][x]
                 ? cell === "mine"
-                  ? "bg-casino-red"
-                  : "bg-casino-gold/20"
-                : flagged[y]?.[x]
-                ? "bg-casino-green"
+                  ? "bg-casino-red text-white"
+                  : "bg-casino-gold text-black"
+                : flagged[y][x]
+                ? "bg-casino-green text-white"
                 : "bg-gray-700 hover:bg-gray-600"
             }`}
-            disabled={!isPlaying || revealed[y]?.[x]}
           >
-            {revealed[y]?.[x] ? (
-              cell === "mine" ? (
-                <Bomb className="w-4 h-4" />
-              ) : cell === 0 ? (
-                ""
-              ) : (
-                cell
-              )
-            ) : flagged[y]?.[x] ? (
-              <Flag className="w-4 h-4" />
-            ) : null}
+            {revealed[y][x] && cell !== "mine" && cell !== "empty" && cell}
+            {revealed[y][x] && cell === "mine" && "💣"}
+            {!revealed[y][x] && flagged[y][x] && "🚩"}
           </button>
         ))
       )}

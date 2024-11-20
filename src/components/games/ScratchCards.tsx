@@ -63,7 +63,7 @@ export const ScratchCards = () => {
       .fill(0)
       .map(() => {
         const multiplier = PRIZE_MULTIPLIERS[type][Math.floor(Math.random() * PRIZE_MULTIPLIERS[type].length)];
-        return SCRATCH_PRICES[type] * multiplier;
+        return Math.floor(SCRATCH_PRICES[type] * multiplier);
       });
     setPrizes(newPrizes);
   };
@@ -146,14 +146,14 @@ export const ScratchCards = () => {
                 className="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold"
               >
                 <Diamond className="mr-2 h-4 w-4" />
-                Sapphire ($1000)
+                Sapphire ($1K)
               </Button>
               <Button
                 onClick={() => handlePurchaseCard("ruby")}
                 className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold"
               >
                 <Diamond className="mr-2 h-4 w-4" />
-                Ruby ($2000)
+                Ruby ($2K)
               </Button>
             </div>
           </div>

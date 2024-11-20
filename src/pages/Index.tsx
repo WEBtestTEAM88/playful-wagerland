@@ -68,7 +68,6 @@ const Index = () => {
           <LuckyDice />
           <Blackjack />
           <WheelOfFortune />
-          <SimpleWheelOfFortune />
           <HighLow />
           <RockPaperScissors />
           <DoubleOrNothing />

@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 interface MinesweeperControlsProps {
   betAmount: number;
   setBetAmount: (amount: number) => void;
-  difficulty: string;
-  setDifficulty: (difficulty: string) => void;
+  difficulty: "easy" | "medium" | "hard";
+  setDifficulty: (difficulty: "easy" | "medium" | "hard") => void;
   isPlaying: boolean;
   userBalance: number;
   onStartGame: () => void;

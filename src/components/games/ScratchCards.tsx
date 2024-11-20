@@ -109,49 +109,53 @@ export const ScratchCards = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         {!isScratching ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 justify-items-center">
-            <Button
-              onClick={() => handlePurchaseCard("basic")}
-              className="w-40 bg-casino-gold hover:bg-casino-gold/80 text-black font-semibold"
-            >
-              <Coins className="mr-2 h-4 w-4" />
-              Basic ($50)
-            </Button>
-            <Button
-              onClick={() => handlePurchaseCard("silver")}
-              className="w-40 bg-gray-400 hover:bg-gray-400/80 text-black font-semibold"
-            >
-              <Coins className="mr-2 h-4 w-4" />
-              Silver ($100)
-            </Button>
-            <Button
-              onClick={() => handlePurchaseCard("gold")}
-              className="w-40 bg-yellow-600 hover:bg-yellow-600/80 text-black font-semibold"
-            >
-              <Sparkles className="mr-2 h-4 w-4" />
-              Gold ($200)
-            </Button>
-            <Button
-              onClick={() => handlePurchaseCard("diamond")}
-              className="w-40 bg-blue-500 hover:bg-blue-600 text-white font-semibold"
-            >
-              <Diamond className="mr-2 h-4 w-4" />
-              Diamond ($500)
-            </Button>
-            <Button
-              onClick={() => handlePurchaseCard("sapphire")}
-              className="w-40 bg-blue-700 hover:bg-blue-800 text-white font-semibold"
-            >
-              <Diamond className="mr-2 h-4 w-4" />
-              Sapphire ($1000)
-            </Button>
-            <Button
-              onClick={() => handlePurchaseCard("ruby")}
-              className="w-40 bg-red-600 hover:bg-red-700 text-white font-semibold"
-            >
-              <Diamond className="mr-2 h-4 w-4" />
-              Ruby ($2000)
-            </Button>
+          <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-3 gap-2">
+              <Button
+                onClick={() => handlePurchaseCard("basic")}
+                className="w-full bg-casino-gold hover:bg-casino-gold/80 text-black font-semibold"
+              >
+                <Coins className="mr-2 h-4 w-4" />
+                Basic ($50)
+              </Button>
+              <Button
+                onClick={() => handlePurchaseCard("silver")}
+                className="w-full bg-gray-400 hover:bg-gray-400/80 text-black font-semibold"
+              >
+                <Coins className="mr-2 h-4 w-4" />
+                Silver ($100)
+              </Button>
+              <Button
+                onClick={() => handlePurchaseCard("gold")}
+                className="w-full bg-yellow-600 hover:bg-yellow-600/80 text-black font-semibold"
+              >
+                <Sparkles className="mr-2 h-4 w-4" />
+                Gold ($200)
+              </Button>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              <Button
+                onClick={() => handlePurchaseCard("diamond")}
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold"
+              >
+                <Diamond className="mr-2 h-4 w-4" />
+                Diamond ($500)
+              </Button>
+              <Button
+                onClick={() => handlePurchaseCard("sapphire")}
+                className="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold"
+              >
+                <Diamond className="mr-2 h-4 w-4" />
+                Sapphire ($1000)
+              </Button>
+              <Button
+                onClick={() => handlePurchaseCard("ruby")}
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold"
+              >
+                <Diamond className="mr-2 h-4 w-4" />
+                Ruby ($2000)
+              </Button>
+            </div>
           </div>
         ) : (
           <div className={`grid ${getGridCols(currentCard)} gap-1 md:gap-2`}>

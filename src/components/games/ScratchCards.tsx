@@ -104,45 +104,45 @@ export const ScratchCards = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         {!isScratching ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="flex flex-wrap justify-center gap-4">
             <Button
               onClick={() => handlePurchaseCard("basic")}
-              className="bg-casino-gold hover:bg-casino-gold/80"
+              className="w-40 bg-casino-gold hover:bg-casino-gold/80 text-black font-semibold"
             >
               <Coins className="mr-2 h-4 w-4" />
               Basic ($5)
             </Button>
             <Button
               onClick={() => handlePurchaseCard("silver")}
-              className="bg-gray-400 hover:bg-gray-400/80"
+              className="w-40 bg-gray-400 hover:bg-gray-400/80 text-black font-semibold"
             >
               <Coins className="mr-2 h-4 w-4" />
               Silver ($10)
             </Button>
             <Button
               onClick={() => handlePurchaseCard("gold")}
-              className="bg-yellow-600 hover:bg-yellow-600/80"
+              className="w-40 bg-yellow-600 hover:bg-yellow-600/80 text-black font-semibold"
             >
               <Sparkles className="mr-2 h-4 w-4" />
               Gold ($20)
             </Button>
             <Button
               onClick={() => handlePurchaseCard("diamond")}
-              className="bg-blue-500 hover:bg-blue-600"
+              className="w-40 bg-blue-500 hover:bg-blue-600 text-white font-semibold"
             >
               <Diamond className="mr-2 h-4 w-4" />
               Diamond ($50)
             </Button>
             <Button
               onClick={() => handlePurchaseCard("sapphire")}
-              className="bg-blue-700 hover:bg-blue-800"
+              className="w-40 bg-blue-700 hover:bg-blue-800 text-white font-semibold"
             >
               <Diamond className="mr-2 h-4 w-4" />
               Sapphire ($100)
             </Button>
             <Button
               onClick={() => handlePurchaseCard("ruby")}
-              className="bg-red-600 hover:bg-red-700"
+              className="w-40 bg-red-600 hover:bg-red-700 text-white font-semibold"
             >
               <Diamond className="mr-2 h-4 w-4" />
               Ruby ($200)

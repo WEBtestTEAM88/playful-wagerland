@@ -78,8 +78,6 @@ const Index = () => {
           <HorseRacing />
           <ScratchCards />
           <TreasureHunt />
-          <Minesweeper />
-          <MemoryMatch />
         </div>
       </div>
     </div>

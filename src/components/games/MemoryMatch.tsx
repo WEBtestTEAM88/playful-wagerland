@@ -116,38 +116,38 @@ export const MemoryMatch = () => {
             <Button
               onClick={() => setBetAmount(Math.max(10, betAmount - 10))}
               disabled={isPlaying || betAmount <= 10}
-              className="bg-casino-red w-12 h-10"
+              className="bg-casino-red"
             >
               -10
             </Button>
-            <span className="text-casino-gold px-4 min-w-[100px] text-center">Bet: ${betAmount}</span>
+            <span className="text-casino-gold px-4">Bet: ${betAmount}</span>
             <Button
               onClick={() => setBetAmount(betAmount + 10)}
               disabled={isPlaying || (user?.balance || 0) < betAmount + 10}
-              className="bg-casino-green w-12 h-10"
+              className="bg-casino-green"
             >
               +10
             </Button>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex gap-2">
             <Button
               onClick={() => setDifficulty("easy")}
               disabled={isPlaying}
-              className={`w-24 h-10 ${difficulty === "easy" ? "bg-casino-gold" : "bg-gray-700"}`}
+              className={`w-24 ${difficulty === "easy" ? "bg-casino-gold" : "bg-gray-700"}`}
             >
               Easy
             </Button>
             <Button
               onClick={() => setDifficulty("medium")}
               disabled={isPlaying}
-              className={`w-24 h-10 ${difficulty === "medium" ? "bg-casino-gold" : "bg-gray-700"}`}
+              className={`w-24 ${difficulty === "medium" ? "bg-casino-gold" : "bg-gray-700"}`}
             >
               Medium
             </Button>
             <Button
               onClick={() => setDifficulty("hard")}
               disabled={isPlaying}
-              className={`w-24 h-10 ${difficulty === "hard" ? "bg-casino-gold" : "bg-gray-700"}`}
+              className={`w-24 ${difficulty === "hard" ? "bg-casino-gold" : "bg-gray-700"}`}
             >
               Hard
             </Button>
@@ -155,7 +155,7 @@ export const MemoryMatch = () => {
           <Button
             onClick={initializeGame}
             disabled={isPlaying}
-            className="bg-casino-gold hover:bg-casino-gold/90 text-casino-black w-24 h-10"
+            className="bg-casino-gold hover:bg-casino-gold/90 text-casino-black"
           >
             Start Game
           </Button>

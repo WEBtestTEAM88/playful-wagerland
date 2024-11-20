@@ -26,13 +26,36 @@ export const ScratchCards = () => {
   const [scratchedAreas, setScratchedAreas] = useState<number[]>([]);
   const [currentCard, setCurrentCard] = useState<CardType>("basic");
   const [prizes, setPrizes] = useState<number[]>([]);
+  const [totalWin, setTotalWin] = useState<number | null>(null);
 
   const getGridSize = (type: CardType) => {
-    return 9; // All cards now use 3x3 grid
+    switch (type) {
+      case "basic":
+        return 9; // 3x3
+      case "silver":
+        return 25; // 5x5
+      case "gold":
+        return 49; // 7x7
+      default:
+        return 9;
+    }
+  };
+
+  const getGridCols = (type: CardType) => {
+    switch (type) {
+      case "basic":
+        return "grid-cols-3"; // 3x3
+      case "silver":
+        return "grid-cols-5"; // 5x5
+      case "gold":
+        return "grid-cols-7"; // 7x7
+      default:
+        return "grid-cols-3";
+    }
   };
 
   const getMaxScratches = () => {
-    return 3; // All cards now have 3 scratches
+    return 3; // All cards have 3 scratches
   };
 
   const handlePurchaseCard = (type: CardType) => {
@@ -47,6 +70,7 @@ export const ScratchCards = () => {
     setCurrentCard(type);
     setIsScratching(true);
     setScratchedAreas([]);
+    setTotalWin(null);
     
     const gridSize = getGridSize(type);
     const newPrizes = Array(gridSize)
@@ -70,6 +94,7 @@ export const ScratchCards = () => {
     if (newScratchedAreas.length === maxScratches) {
       setIsScratching(false);
       const totalWin = newScratchedAreas.reduce((sum, idx) => sum + prizes[idx], 0);
+      setTotalWin(totalWin);
       
       if (totalWin > 0) {
         updateBalance(totalWin);
@@ -117,24 +142,31 @@ export const ScratchCards = () => {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-1 md:gap-2">
-            {Array(getGridSize(currentCard))
-              .fill(0)
-              .map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleScratch(index)}
-                  className={`aspect-square rounded-md transition-all duration-300 text-xs md:text-sm ${
-                    scratchedAreas.includes(index)
-                      ? "bg-casino-gold text-black"
-                      : "bg-gray-700 hover:bg-gray-600"
-                  }`}
-                >
-                  {scratchedAreas.includes(index) && (
-                    <span className="font-bold">${prizes[index]}</span>
-                  )}
-                </button>
-              ))}
+          <div className="space-y-4">
+            <div className={`grid ${getGridCols(currentCard)} gap-1 md:gap-2`}>
+              {Array(getGridSize(currentCard))
+                .fill(0)
+                .map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleScratch(index)}
+                    className={`aspect-square rounded-md transition-all duration-300 text-xs md:text-sm ${
+                      scratchedAreas.includes(index)
+                        ? "bg-casino-gold text-black"
+                        : "bg-gray-700 hover:bg-gray-600"
+                    }`}
+                  >
+                    {scratchedAreas.includes(index) && (
+                      <span className="font-bold">${prizes[index]}</span>
+                    )}
+                  </button>
+                ))}
+            </div>
+            {totalWin !== null && (
+              <div className="text-center text-xl font-bold text-casino-gold">
+                {totalWin > 0 ? `Total Win: $${totalWin}` : "No Win"}
+              </div>
+            )}
           </div>
         )}
       </CardContent>

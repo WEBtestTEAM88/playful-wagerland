@@ -74,14 +74,14 @@ export const Bingo = () => {
         playWinSound();
         updateBalance(winnings);
         setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
-        updateUserStats("bingo", true, winnings - bet);
+        updateUserStats(true);
         toast({
           title: "Bingo!",
           description: `${matches} matches! You won $${winnings - bet}!`,
         });
       } else {
         setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
-        updateUserStats("bingo", false, bet);
+        updateUserStats(false);
         playLoseSound();
         toast({
           title: "No Bingo",

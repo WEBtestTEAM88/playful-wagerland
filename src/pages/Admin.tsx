@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
-import { Ban, Crown, Coins, Settings } from "lucide-react";
+import { Ban, Crown, Coins } from "lucide-react";
 
 const AdminPanel = () => {
   const { user, users, updateBalance } = useUser();
@@ -85,9 +85,9 @@ const AdminPanel = () => {
               <TableRow className="bg-black/40 hover:bg-black/40">
                 <TableHead className="text-casino-gold">Username</TableHead>
                 <TableHead className="text-casino-gold">Balance</TableHead>
-                <TableHead className="text-casino-gold">Games Played</TableHead>
-                <TableHead className="text-casino-gold">Total Winnings</TableHead>
-                <TableHead className="text-casino-gold">Total Losses</TableHead>
+                <TableHead className="text-casino-gold">Wins</TableHead>
+                <TableHead className="text-casino-gold">Losses</TableHead>
+                <TableHead className="text-casino-gold">Streak</TableHead>
                 <TableHead className="text-casino-gold">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -101,13 +101,9 @@ const AdminPanel = () => {
                     {user.username}
                   </TableCell>
                   <TableCell className="text-white">${user.balance}</TableCell>
-                  <TableCell className="text-white">{user.stats.gamesPlayed}</TableCell>
-                  <TableCell className="text-green-500">
-                    ${user.stats.totalWinnings}
-                  </TableCell>
-                  <TableCell className="text-red-500">
-                    ${user.stats.totalLosses}
-                  </TableCell>
+                  <TableCell className="text-green-500">{user.stats.wins}</TableCell>
+                  <TableCell className="text-red-500">{user.stats.losses}</TableCell>
+                  <TableCell className="text-casino-gold">{user.stats.streak}</TableCell>
                   <TableCell>
                     <div className="flex gap-2 items-center">
                       <Input

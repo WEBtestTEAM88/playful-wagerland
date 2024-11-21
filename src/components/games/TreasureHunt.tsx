@@ -93,7 +93,7 @@ export const TreasureHunt = () => {
           <Button
             onClick={initializeGame}
             disabled={isPlaying}
-            className="bg-casino-gold hover:bg-casino-gold/90 text-casino-black ml-8"
+              className="bg-casino-gold hover:bg-casino-gold/90 text-casino-black w-24 h-10 "
           >
             Start Game
           </Button>

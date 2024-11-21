@@ -61,25 +61,25 @@ const Index = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          <SlotMachine />
-          <Roulette />
-          <CardFlip />
-          <DiamondMine />
-          <LuckyDice />
-          <Blackjack />
-          <WheelOfFortune />
-          <HighLow />
-          <RockPaperScissors />
-          <DoubleOrNothing />
-          <Bingo />
-          <VideoPoker />
-          <Trivia />
-          <FishHunter />
-          <HorseRacing />
-          <ScratchCards />
-          <TreasureHunt />
-          <Minesweeper />
-          <MemoryMatch />
+        <SlotMachine />
+<Roulette />
+<WheelOfFortune />
+<Blackjack />
+<VideoPoker />
+<CardFlip />
+<LuckyDice />
+<Bingo />
+<HighLow />
+<DiamondMine />
+<RockPaperScissors />
+<Trivia />
+<FishHunter />
+<TreasureHunt />
+<Minesweeper />
+<ScratchCards />
+<HorseRacing />
+<MemoryMatch />
+<DoubleOrNothing />
         </div>
       </div>
     </div>

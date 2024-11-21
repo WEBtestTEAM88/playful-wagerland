@@ -2,57 +2,58 @@ import { useState } from "react";
 import { useUser } from "@/contexts/UserContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { playWinSound, playLoseSound } from "@/utils/sounds";
-import { CircleDollarSign, Coins } from "lucide-react";
+import { CircleDollarSign } from "lucide-react";
 
 export const DoubleOrNothing = () => {
   const { user, updateBalance, updateUserStats } = useUser();
   const [bet, setBet] = useState(10);
   const [isPlaying, setIsPlaying] = useState(false);
   const [stats, setStats] = useState({ wins: 0, losses: 0 });
-  const [showCoins, setShowCoins] = useState(false);
 
-  const play = () => {
-    if (!user) return;
-    if (bet > user.balance) {
-      toast({
-        title: "Insufficient funds",
-        description: "You don't have enough balance for this bet.",
-        variant: "destructive",
-      });
+  const handlePlay = () => {
+    if (!user) {
+      toast.error("Please log in to play");
       return;
     }
 
+    if (bet > user.balance) {
+      toast.error("Insufficient funds");
+      return;
+    }
+
+    if (bet <= 0) {
+      toast.error("Please enter a valid bet amount");
+      return;
+    }
+
+    // Start game animation
     setIsPlaying(true);
-    setShowCoins(true);
+    
+    // Deduct bet immediately
     updateBalance(-bet);
 
+    // Generate result immediately but show it after animation
+    const success = Math.random() > 0.5;
+
     setTimeout(() => {
-      const success = Math.random() > 0.5;
+      setIsPlaying(false);
+
       if (success) {
         const winnings = bet * 2;
         updateBalance(winnings);
         setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
-        updateUserStats("doubleOrNothing", true, winnings);
+        updateUserStats("doubleOrNothing", true, winnings - bet);
         playWinSound();
-        toast({
-          title: "Congratulations!",
-          description: `You doubled your bet! Won $${winnings}!`,
-        });
+        toast.success(`You won $${winnings}!`);
       } else {
         setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
         updateUserStats("doubleOrNothing", false, bet);
         playLoseSound();
-        toast({
-          title: "Better luck next time!",
-          description: "You lost your bet.",
-          variant: "destructive",
-        });
+        toast.error(`You lost $${bet}`);
       }
-      setIsPlaying(false);
-      setTimeout(() => setShowCoins(false), 500);
-    }, 1200);
+    }, 1000);
   };
 
   return (
@@ -66,24 +67,10 @@ export const DoubleOrNothing = () => {
         </div>
       </div>
 
-      <div className="relative h-32 flex justify-center items-center">
-        {showCoins && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            {[...Array(6)].map((_, i) => (
-              <Coins
-                key={i}
-                className={`absolute text-casino-gold w-8 h-8 animate-[fall_1s_ease-in_forwards] opacity-0`}
-                style={{
-                  left: `${30 + i * 8}%`,
-                  animationDelay: `${i * 0.1}s`,
-                }}
-              />
-            ))}
-          </div>
-        )}
+      <div className="flex justify-center items-center h-32">
         <CircleDollarSign 
           className={`w-24 h-24 text-casino-gold transition-all duration-300 ${
-            isPlaying ? 'animate-bounce' : ''
+            isPlaying ? 'animate-spin' : ''
           }`}
         />
       </div>
@@ -95,17 +82,18 @@ export const DoubleOrNothing = () => {
             type="number"
             min={1}
             value={bet}
-            onChange={(e) => setBet(Number(e.target.value))}
+            onChange={(e) => setBet(Math.max(1, Number(e.target.value)))}
+            disabled={isPlaying}
             className="w-full bg-casino-black/50 border-casino-gold/30 text-casino-white rounded-md p-2"
           />
         </div>
 
         <Button
-          onClick={play}
-          disabled={isPlaying || !user}
+          onClick={handlePlay}
+          disabled={isPlaying || !user || bet > (user?.balance || 0)}
           className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-black"
         >
-          Double or Nothing
+          {isPlaying ? "Rolling..." : "Double or Nothing!"}
         </Button>
       </div>
 

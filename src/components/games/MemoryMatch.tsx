@@ -161,6 +161,7 @@ export const MemoryMatch = () => {
                 Hard
               </Button>
             </div>
+            </div>
             <div className="flex justify-center">
             <Button
               onClick={initializeGame}
@@ -169,7 +170,6 @@ export const MemoryMatch = () => {
             >
               Start Game
             </Button>
-            </div>
           </div>
         </div>
         <div className="grid grid-cols-4 gap-2">

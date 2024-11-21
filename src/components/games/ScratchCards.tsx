@@ -37,7 +37,6 @@ export const ScratchCards = () => {
       case "silver":
         return 25; // 5x5
       case "gold":
-        return 49; // 7x7
       case "diamond":
         return 49; // 7x7
       default:
@@ -60,7 +59,7 @@ export const ScratchCards = () => {
   };
 
   const getMaxScratches = () => {
-    return 3; // All cards have 3 scratches
+    return 3;
   };
 
   const handlePurchaseCard = (type: CardType) => {
@@ -98,14 +97,14 @@ export const ScratchCards = () => {
 
     if (newScratchedAreas.length === maxScratches) {
       setIsScratching(false);
-      const totalWin = newScratchedAreas.reduce((sum, idx) => sum + prizes[idx], 0);
-      setTotalWin(totalWin);
+      const scratchWin = newScratchedAreas.reduce((sum, idx) => sum + prizes[idx], 0);
+      setTotalWin(scratchWin);
       
-      if (totalWin > 0) {
-        updateBalance(totalWin);
-        updateUserStats("scratchcards", true, totalWin - SCRATCH_PRICES[currentCard]);
+      if (scratchWin > 0) {
+        updateBalance(scratchWin);
+        updateUserStats("scratchcards", true, scratchWin - SCRATCH_PRICES[currentCard]);
         playWinSound();
-        toast.success(`You won $${totalWin}!`);
+        toast.success(`You won $${scratchWin}!`);
       } else {
         updateUserStats("scratchcards", false, SCRATCH_PRICES[currentCard]);
         playLoseSound();
@@ -179,6 +178,11 @@ export const ScratchCards = () => {
                 {totalWin > 0 ? `Total Win: $${totalWin}` : "No Win"}
               </div>
             )}
+          </div>
+        )}
+        {user && (
+          <div className="text-center text-sm text-gray-400">
+            Balance: ${user.balance}
           </div>
         )}
       </CardContent>

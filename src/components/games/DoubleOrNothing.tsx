@@ -13,7 +13,7 @@ export const DoubleOrNothing = () => {
   const [stats, setStats] = useState({ wins: 0, losses: 0 });
   const [showCoins, setShowCoins] = useState(false);
 
-  const play = async () => {
+  const play = () => {
     if (!user) return;
     if (bet > user.balance) {
       toast({
@@ -26,39 +26,33 @@ export const DoubleOrNothing = () => {
 
     setIsPlaying(true);
     setShowCoins(true);
-
-    // Deduct bet immediately
     updateBalance(-bet);
 
-    // Generate result immediately but wait to show it
-    const success = Math.random() > 0.5;
-
-    // Wait for animation
-    await new Promise(resolve => setTimeout(resolve, 1200));
-
-    if (success) {
-      const winnings = bet * 2;
-      updateBalance(winnings);
-      setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
-      updateUserStats("doubleOrNothing", true, winnings);
-      playWinSound();
-      toast({
-        title: "Congratulations!",
-        description: `You doubled your bet! Won $${winnings}!`,
-      });
-    } else {
-      setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
-      updateUserStats("doubleOrNothing", false, bet);
-      playLoseSound();
-      toast({
-        title: "Better luck next time!",
-        description: "You lost your bet.",
-        variant: "destructive",
-      });
-    }
-
-    setIsPlaying(false);
-    setTimeout(() => setShowCoins(false), 500);
+    setTimeout(() => {
+      const success = Math.random() > 0.5;
+      if (success) {
+        const winnings = bet * 2;
+        updateBalance(winnings);
+        setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
+        updateUserStats("doubleOrNothing", true, winnings);
+        playWinSound();
+        toast({
+          title: "Congratulations!",
+          description: `You doubled your bet! Won $${winnings}!`,
+        });
+      } else {
+        setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
+        updateUserStats("doubleOrNothing", false, bet);
+        playLoseSound();
+        toast({
+          title: "Better luck next time!",
+          description: "You lost your bet.",
+          variant: "destructive",
+        });
+      }
+      setIsPlaying(false);
+      setTimeout(() => setShowCoins(false), 500);
+    }, 1200);
   };
 
   return (

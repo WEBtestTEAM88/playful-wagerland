@@ -146,6 +146,11 @@ export const SlotMachine = () => {
           Balance: ${user.balance}
         </div>
       )}
+      {user && (
+        <div className="text-center text-sm text-gray-400">
+          Balance: ${user.balance}
+        </div>
+      )}
     </Card>
   );
 };

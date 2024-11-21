@@ -174,6 +174,11 @@ export const HorseRacing = () => {
               : `${horses.find(h => h.id === winner)?.name} won. Better luck next time!`}
           </div>
         )}
+        {user && (
+        <div className="text-center text-sm text-gray-400">
+          Balance: ${user.balance}
+        </div>
+      )}
       </CardContent>
     </Card>
   );

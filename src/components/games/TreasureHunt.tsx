@@ -118,6 +118,11 @@ export const TreasureHunt = () => {
             </button>
           ))}
         </div>
+        {user && (
+        <div className="text-center text-sm text-gray-400">
+          Balance: ${user.balance}
+        </div>
+      )}
       </CardContent>
     </Card>
   );

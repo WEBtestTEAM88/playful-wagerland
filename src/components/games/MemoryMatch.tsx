@@ -191,6 +191,11 @@ export const MemoryMatch = () => {
         {isPlaying && (
           <div className="text-center text-casino-gold">Moves: {moves}</div>
         )}
+        {user && (
+        <div className="text-center text-sm text-gray-400">
+          Balance: ${user.balance}
+        </div>
+      )}
       </CardContent>
     </Card>
   );

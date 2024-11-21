@@ -112,7 +112,7 @@ export const MemoryMatch = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex flex-col space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
             <div className="flex items-center gap-2">
               <Button
                 onClick={() => setBetAmount(Math.max(10, betAmount - 10))}
@@ -132,7 +132,7 @@ export const MemoryMatch = () => {
                 +10
               </Button>
             </div>
-            <div className="flex items-center justify-center gap-2">
+            <div className="flex items-center gap-2">
               <Button
                 onClick={() => setDifficulty("easy")}
                 disabled={isPlaying}
@@ -161,15 +161,13 @@ export const MemoryMatch = () => {
                 Hard
               </Button>
             </div>
-            <div className="flex justify-center">
-              <Button
-                onClick={initializeGame}
-                disabled={isPlaying}
-                className="bg-casino-gold hover:bg-casino-gold/90 text-casino-black w-24 h-10"
-              >
-                Start Game
-              </Button>
-            </div>
+            <Button
+              onClick={initializeGame}
+              disabled={isPlaying}
+              className="bg-casino-gold hover:bg-casino-gold/90 text-casino-black w-24 h-10"
+            >
+              Start Game
+            </Button>
           </div>
         </div>
         <div className="grid grid-cols-4 gap-2">

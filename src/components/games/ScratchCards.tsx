@@ -47,12 +47,12 @@ export const ScratchCards = () => {
   const getGridCols = (type: CardType) => {
     switch (type) {
       case "basic":
-        return "grid-cols-3"; // 3x3
+        return "grid-cols-3";
       case "silver":
-        return "grid-cols-5"; // 5x5
+        return "grid-cols-5";
       case "gold":
       case "diamond":
-        return "grid-cols-7"; // 7x7
+        return "grid-cols-7";
       default:
         return "grid-cols-3";
     }
@@ -70,6 +70,7 @@ export const ScratchCards = () => {
       return;
     }
 
+    // Deduct the price of the card first
     updateBalance(-SCRATCH_PRICES[type]);
     setCurrentCard(type);
     setIsScratching(true);
@@ -101,11 +102,14 @@ export const ScratchCards = () => {
       setTotalWin(scratchWin);
       
       if (scratchWin > 0) {
+        // Add the winnings to the user's balance
         updateBalance(scratchWin);
+        // Update stats with net profit/loss (winnings minus card cost)
         updateUserStats("scratchcards", true, scratchWin - SCRATCH_PRICES[currentCard]);
         playWinSound();
         toast.success(`You won $${scratchWin}!`);
       } else {
+        // Update stats with the loss (card cost)
         updateUserStats("scratchcards", false, SCRATCH_PRICES[currentCard]);
         playLoseSound();
         toast.error("Better luck next time!");

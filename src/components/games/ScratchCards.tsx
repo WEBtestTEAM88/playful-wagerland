@@ -125,7 +125,7 @@ export const ScratchCards = () => {
       <CardContent className="space-y-4">
         {!isScratching ? (
           <div className="flex flex-col gap-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <Button
                 onClick={() => handlePurchaseCard("basic")}
                 className="w-full bg-casino-gold hover:bg-casino-gold/80 text-black font-semibold"
@@ -158,7 +158,7 @@ export const ScratchCards = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            <div className={`grid ${getGridCols(currentCard)} gap-1 md:gap-2`}>
+            <div className={`grid ${getGridCols(currentCard)} gap-2`}>
               {Array(getGridSize(currentCard))
                 .fill(0)
                 .map((_, index) => (

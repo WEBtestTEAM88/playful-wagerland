@@ -70,7 +70,7 @@ export const TreasureHunt = () => {
         <CardTitle className="text-center text-casino-gold">Treasure Hunt</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-center items-center mb-4">
           <div className="flex items-center space-x-4">
             <Button
               onClick={() => setBetAmount(Math.max(10, betAmount - 10))}

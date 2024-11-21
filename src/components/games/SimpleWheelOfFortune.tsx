@@ -50,11 +50,11 @@ export const SimpleWheelOfFortune = () => {
       if (winningZone === selectedZone) {
         const winnings = betAmount * BETTING_ZONES[selectedZone].multiplier;
         updateBalance(winnings);
-        updateUserStats("wheelOfFortune", true, winnings - betAmount);
+        updateUserStats(true);
         playWinSound();
         toast.success(`You won $${winnings}!`);
       } else {
-        updateUserStats("wheelOfFortune", false, betAmount);
+        updateUserStats(false);
         playLoseSound();
         toast.error("Better luck next time!");
       }

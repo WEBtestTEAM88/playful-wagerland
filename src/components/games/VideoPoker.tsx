@@ -26,7 +26,8 @@ export const VideoPoker = () => {
     const deck: PokerCard[] = [];
     for (const suit of SUITS) {
       for (const value of VALUES) {
-        deck.push({ suit, value, held: false });
+        const numericValue = value === "A" ? 11 : ["J", "Q", "K"].includes(value) ? 10 : parseInt(value);
+        deck.push({ suit, value, held: false, numericValue });
       }
     }
     return shuffle(deck);
@@ -125,16 +126,14 @@ export const VideoPoker = () => {
 
     if (winnings > 0) {
       updateBalance(winnings);
-      setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
-      updateUserStats("videoPoker", true, winnings);
+      updateUserStats(true);
       playWinSound();
       toast({
         title: handRank + "!",
         description: `You won $${winnings}!`,
       });
     } else {
-      setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
-      updateUserStats("videoPoker", false, bet);
+      updateUserStats(false);
       playLoseSound();
       toast({
         title: "No Win",
@@ -248,3 +247,4 @@ export const VideoPoker = () => {
     </Card>
   );
 };
+

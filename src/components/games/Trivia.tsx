@@ -59,16 +59,14 @@ export const Trivia = () => {
     if (isCorrect) {
       const winnings = bet * 2;
       updateBalance(winnings);
-      setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
-      updateUserStats("trivia", true, winnings - bet);
+      updateUserStats(true);
       playWinSound();
       toast({
         title: "Correct!",
         description: `You won $${winnings - bet}!`,
       });
     } else {
-      setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
-      updateUserStats("trivia", false, bet);
+      updateUserStats(false);
       playLoseSound();
       toast({
         title: "Wrong!",

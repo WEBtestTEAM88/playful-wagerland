@@ -76,7 +76,7 @@ export const Minesweeper = () => {
     
     if (grid[y][x] === "mine") {
       setIsPlaying(false);
-      updateUserStats("minesweeper", false, betAmount);
+      updateUserStats(false);
       playLoseSound();
       toast.error("Boom! Game Over!");
       grid.forEach((row, i) => {
@@ -92,7 +92,7 @@ export const Minesweeper = () => {
         setIsPlaying(false);
         const winnings = betAmount * 2;
         updateBalance(winnings);
-        updateUserStats("minesweeper", true, winnings - betAmount);
+        updateUserStats(true);
         playWinSound();
         toast.success(`You won $${winnings}!`);
       }

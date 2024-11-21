@@ -53,12 +53,12 @@ export const TreasureHunt = () => {
       setIsPlaying(false);
       const winnings = TREASURE_REWARD;
       updateBalance(winnings);
-      updateUserStats("treasurehunt", true, winnings - betAmount);
+      updateUserStats(true);
       playWinSound();
       toast.success(`You found the treasure! Won $${winnings}!`);
     } else if (grid[index] === "bomb") {
       setIsPlaying(false);
-      updateUserStats("treasurehunt", false, betAmount);
+      updateUserStats(false);
       playLoseSound();
       toast.error("Boom! You hit a bomb!");
     }
@@ -88,8 +88,8 @@ export const TreasureHunt = () => {
               +10
             </Button>
           </div>
-            </div>
-            <div className="flex justify-center">
+        </div>
+        <div className="flex justify-center">
           <Button
             onClick={initializeGame}
             disabled={isPlaying}

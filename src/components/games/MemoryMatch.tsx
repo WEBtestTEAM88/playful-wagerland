@@ -90,7 +90,7 @@ export const MemoryMatch = () => {
           const totalWin = baseWin + movesBonus;
           
           updateBalance(totalWin);
-          updateUserStats("memorymatch", true, totalWin - betAmount);
+          updateUserStats(true);
           playWinSound();
           toast.success(`You won $${totalWin}! (Bonus for fewer moves: $${movesBonus})`);
         }
@@ -113,56 +113,25 @@ export const MemoryMatch = () => {
       <CardContent className="space-y-4">
         <div className="flex flex-col space-y-4">
           <div className="flex items-center justify-center gap-2 flex-wrap">
-            <div className="flex items-center gap-2">
-              <Button
-                onClick={() => setBetAmount(Math.max(10, betAmount - 10))}
-                disabled={isPlaying || betAmount <= 10}
-                className="bg-casino-red w-12 h-10"
-              >
-                -10
-              </Button>
-              <span className="text-casino-gold px-4 min-w-[100px] text-center">
-                Bet: ${betAmount}
-              </span>
-              <Button
-                onClick={() => setBetAmount(betAmount + 10)}
-                disabled={isPlaying || (user?.balance || 0) < betAmount + 10}
-                className="bg-casino-green w-12 h-10"
-              >
-                +10
-              </Button>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                onClick={() => setDifficulty("easy")}
-                disabled={isPlaying}
-                className={`w-24 h-10 ${
-                  difficulty === "easy" ? "bg-casino-gold" : "bg-gray-700"
-                }`}
-              >
-                Easy
-              </Button>
-              <Button
-                onClick={() => setDifficulty("medium")}
-                disabled={isPlaying}
-                className={`w-24 h-10 ${
-                  difficulty === "medium" ? "bg-casino-gold" : "bg-gray-700"
-                }`}
-              >
-                Medium
-              </Button>
-              <Button
-                onClick={() => setDifficulty("hard")}
-                disabled={isPlaying}
-                className={`w-24 h-10 ${
-                  difficulty === "hard" ? "bg-casino-gold" : "bg-gray-700"
-                }`}
-              >
-                Hard
-              </Button>
-            </div>
-            </div>
-            <div className="flex justify-center">
+            <Button
+              onClick={() => setBetAmount(Math.max(10, betAmount - 10))}
+              disabled={isPlaying || betAmount <= 10}
+              className="bg-casino-red w-12 h-10"
+            >
+              -10
+            </Button>
+            <span className="text-casino-gold px-4 min-w-[100px] text-center">
+              Bet: ${betAmount}
+            </span>
+            <Button
+              onClick={() => setBetAmount(betAmount + 10)}
+              disabled={isPlaying || (user?.balance || 0) < betAmount + 10}
+              className="bg-casino-green w-12 h-10"
+            >
+              +10
+            </Button>
+          </div>
+          <div className="flex justify-center">
             <Button
               onClick={initializeGame}
               disabled={isPlaying}

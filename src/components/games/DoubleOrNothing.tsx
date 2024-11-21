@@ -29,6 +29,7 @@ export const DoubleOrNothing = () => {
     }
 
     setIsPlaying(true);
+    // Deduct bet immediately
     updateBalance(-bet);
 
     // Generate result immediately but show it after animation
@@ -38,19 +39,15 @@ export const DoubleOrNothing = () => {
       if (success) {
         const winnings = bet * 2;
         playWinSound();
-        setTimeout(() => {
-          updateBalance(winnings);
-          setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
-          updateUserStats(true);
-          toast.success(`You won $${winnings}!`);
-        }, 100);
+        updateBalance(winnings);
+        setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
+        updateUserStats(true);
+        toast.success(`You won $${winnings - bet}!`);
       } else {
         playLoseSound();
-        setTimeout(() => {
-          setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
-          updateUserStats(false);
-          toast.error(`You lost $${bet}`);
-        }, 100);
+        setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
+        updateUserStats(false);
+        toast.error(`You lost $${bet}`);
       }
       setIsPlaying(false);
     }, 1000);

@@ -26,10 +26,14 @@ export const DoubleOrNothing = () => {
 
     setIsPlaying(true);
     setShowCoins(true);
+    
+    // Generate result immediately to ensure consistent state
+    const success = Math.random() > 0.5;
+    
+    // Deduct bet amount immediately
     updateBalance(-bet);
 
     setTimeout(() => {
-      const success = Math.random() > 0.5;
       if (success) {
         const winnings = bet * 2;
         updateBalance(winnings);
@@ -46,7 +50,7 @@ export const DoubleOrNothing = () => {
         playLoseSound();
         toast({
           title: "Better luck next time!",
-          description: "You lost your bet.",
+          description: `You lost $${bet}!`,
           variant: "destructive",
         });
       }

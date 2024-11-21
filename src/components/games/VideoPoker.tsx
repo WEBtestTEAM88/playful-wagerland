@@ -9,6 +9,7 @@ type PokerCard = {
   suit: string;
   value: string;
   held: boolean;
+  numericValue: number;  // Add this line to include numericValue
 };
 
 const SUITS = ["♠", "♣", "♥", "♦"];
@@ -247,4 +248,3 @@ export const VideoPoker = () => {
     </Card>
   );
 };
-

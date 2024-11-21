@@ -85,5 +85,26 @@ const Index = () => {
     </div>
   );
 };
+/*
+         <SlotMachine />
+          <Roulette />
+          <CardFlip />
+          <DiamondMine />
+          <LuckyDice />
+          <Blackjack />
+          <WheelOfFortune />
+          <HighLow />
+          <RockPaperScissors />
+          <DoubleOrNothing />
+          <Bingo />
+          <VideoPoker />
+          <Trivia />
+          <FishHunter />
+          <HorseRacing />
+          <ScratchCards />
+          <TreasureHunt />
+          <Minesweeper />
+          <MemoryMatch />
+*/
 
 export default Index;

@@ -15,7 +15,6 @@ export const Bingo = () => {
   const [drawnNumbers, setDrawnNumbers] = useState<number[]>([]);
 
   useEffect(() => {
-    // Generate random card numbers ensuring no duplicates
     const generateUniqueNumbers = () => {
       const nums = new Set<number>();
       while (nums.size < 25) {
@@ -68,38 +67,40 @@ export const Bingo = () => {
     const matches = selectedNumbers.filter(n => drawnArray.includes(n)).length;
     let winnings = 0;
 
-    if (matches >= 3) {
-      const multiplier = matches === 5 ? 100 : matches === 4 ? 10 : 2;
-      winnings = bet * multiplier;
-      updateBalance(winnings);
-      setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
-      updateUserStats("bingo", true, winnings - bet);
-      playWinSound();
-      toast({
-        title: "Bingo!",
-        description: `${matches} matches! You won $${winnings - bet}!`,
-      });
-    } else {
-      setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
-      updateUserStats("bingo", false, bet);
-      playLoseSound();
-      toast({
-        title: "No Bingo",
-        description: `Only ${matches} matches. Better luck next time!`,
-        variant: "destructive",
-      });
-    }
-
     setTimeout(() => {
-      setIsPlaying(false);
-      setSelectedNumbers([]);
-      setDrawnNumbers([]);
-      const newNumbers = new Set<number>();
-      while (newNumbers.size < 25) {
-        newNumbers.add(Math.floor(Math.random() * 75) + 1);
+      if (matches >= 3) {
+        const multiplier = matches === 5 ? 100 : matches === 4 ? 10 : 2;
+        winnings = bet * multiplier;
+        playWinSound();
+        updateBalance(winnings);
+        setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
+        updateUserStats("bingo", true, winnings - bet);
+        toast({
+          title: "Bingo!",
+          description: `${matches} matches! You won $${winnings - bet}!`,
+        });
+      } else {
+        setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
+        updateUserStats("bingo", false, bet);
+        playLoseSound();
+        toast({
+          title: "No Bingo",
+          description: `Only ${matches} matches. Better luck next time!`,
+          variant: "destructive",
+        });
       }
-      setNumbers(Array.from(newNumbers));
-    }, 3000);
+
+      setTimeout(() => {
+        setIsPlaying(false);
+        setSelectedNumbers([]);
+        setDrawnNumbers([]);
+        const newNumbers = new Set<number>();
+        while (newNumbers.size < 25) {
+          newNumbers.add(Math.floor(Math.random() * 75) + 1);
+        }
+        setNumbers(Array.from(newNumbers));
+      }, 3000);
+    }, 1000);
   };
 
   return (

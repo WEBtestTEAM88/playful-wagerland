@@ -70,7 +70,6 @@ export const ScratchCards = () => {
       return;
     }
 
-    // Deduct the price of the card first
     updateBalance(-SCRATCH_PRICES[type]);
     setCurrentCard(type);
     setIsScratching(true);
@@ -102,14 +101,11 @@ export const ScratchCards = () => {
       setTotalWin(scratchWin);
       
       if (scratchWin > 0) {
-        // Add the winnings to the user's balance
         updateBalance(scratchWin);
-        // Update stats with net profit/loss (winnings minus card cost)
         updateUserStats("scratchcards", true, scratchWin - SCRATCH_PRICES[currentCard]);
         playWinSound();
         toast.success(`You won $${scratchWin}!`);
       } else {
-        // Update stats with the loss (card cost)
         updateUserStats("scratchcards", false, SCRATCH_PRICES[currentCard]);
         playLoseSound();
         toast.error("Better luck next time!");
@@ -125,7 +121,7 @@ export const ScratchCards = () => {
       <CardContent className="space-y-4">
         {!isScratching ? (
           <div className="flex flex-col gap-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
               <Button
                 onClick={() => handlePurchaseCard("basic")}
                 className="w-full bg-casino-gold hover:bg-casino-gold/80 text-black font-semibold"

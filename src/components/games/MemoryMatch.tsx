@@ -161,13 +161,15 @@ export const MemoryMatch = () => {
                 Hard
               </Button>
             </div>
+            <div className="flex justify-center">
             <Button
               onClick={initializeGame}
               disabled={isPlaying}
-              className="bg-casino-gold hover:bg-casino-gold/90 text-casino-black w-24 h-10"
+              className="bg-casino-gold hover:bg-casino-gold/90 text-casino-black w-24 h-10 "
             >
               Start Game
             </Button>
+            </div>
           </div>
         </div>
         <div className="grid grid-cols-4 gap-2">

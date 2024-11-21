@@ -8,30 +8,40 @@ const getAudioContext = () => {
 };
 
 const playAudioWithVolume = async (url: string, volume: number) => {
-  const context = getAudioContext();
-  const response = await fetch(url);
-  const arrayBuffer = await response.arrayBuffer();
-  const audioBuffer = await context.decodeAudioData(arrayBuffer);
-  
-  const source = context.createBufferSource();
-  const gainNode = context.createGain();
-  
-  source.buffer = audioBuffer;
-  source.connect(gainNode);
-  gainNode.connect(context.destination);
-  
-  gainNode.gain.value = volume;
-  source.start(0);
+  try {
+    const context = getAudioContext();
+    const response = await fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+    const audioBuffer = await context.decodeAudioData(arrayBuffer);
+    
+    const source = context.createBufferSource();
+    const gainNode = context.createGain();
+    
+    source.buffer = audioBuffer;
+    source.connect(gainNode);
+    gainNode.connect(context.destination);
+    
+    gainNode.gain.value = volume;
+    source.start(0);
+  } catch (error) {
+    console.error('Error playing sound:', error);
+  }
 };
 
-export const playWinSound = (volume = 1) => {
-  playAudioWithVolume('/sounds/win.mp3', volume);
+let currentVolume = 1;
+
+export const setGlobalVolume = (volume: number) => {
+  currentVolume = volume;
 };
 
-export const playLoseSound = (volume = 1) => {
-  playAudioWithVolume('/sounds/lose.mp3', volume);
+export const playWinSound = () => {
+  playAudioWithVolume('/sounds/win.mp3', currentVolume);
 };
 
-export const playSpinSound = (volume = 1) => {
-  playAudioWithVolume('/sounds/spin.mp3', volume);
+export const playLoseSound = () => {
+  playAudioWithVolume('/sounds/lose.mp3', currentVolume);
+};
+
+export const playSpinSound = () => {
+  playAudioWithVolume('/sounds/spin.mp3', currentVolume);
 };

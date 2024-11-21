@@ -112,7 +112,7 @@ export const MemoryMatch = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex flex-col space-y-4">
-          <div className="flex items-center justify-between gap-2 flex-wrap">
+          <div className="flex items-center justify-center gap-2 flex-wrap">
             <div className="flex items-center gap-2">
               <Button
                 onClick={() => setBetAmount(Math.max(10, betAmount - 10))}

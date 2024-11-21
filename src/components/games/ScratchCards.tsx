@@ -3,19 +3,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/contexts/UserContext";
 import { toast } from "sonner";
-import { Coins, Sparkles } from "lucide-react";
+import { Coins, Sparkles, Diamond } from "lucide-react";
 import { playWinSound, playLoseSound } from "@/utils/sounds";
 
 const SCRATCH_PRICES = {
   basic: 50,
   silver: 100,
   gold: 200,
+  diamond: 500,
 };
 
 const PRIZE_MULTIPLIERS = {
-  basic: [0, 0, 0.5, 1, 1.5],
-  silver: [0, 0.5, 1, 1.5, 2],
-  gold: [0, 1, 1.5, 2, 3],
+  basic: [0, 0, 0.25, 0.5, 0.75],
+  silver: [0, 0.25, 0.5, 0.75, 1],
+  gold: [0, 0.5, 0.75, 1, 1.5],
+  diamond: [0.5, 1, 1.5, 2, 2.5],
 };
 
 type CardType = keyof typeof SCRATCH_PRICES;
@@ -36,6 +38,8 @@ export const ScratchCards = () => {
         return 25; // 5x5
       case "gold":
         return 49; // 7x7
+      case "diamond":
+        return 49; // 7x7
       default:
         return 9;
     }
@@ -48,6 +52,7 @@ export const ScratchCards = () => {
       case "silver":
         return "grid-cols-5"; // 5x5
       case "gold":
+      case "diamond":
         return "grid-cols-7"; // 7x7
       default:
         return "grid-cols-3";
@@ -117,7 +122,7 @@ export const ScratchCards = () => {
       <CardContent className="space-y-4">
         {!isScratching ? (
           <div className="flex flex-col gap-4">
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
               <Button
                 onClick={() => handlePurchaseCard("basic")}
                 className="w-full bg-casino-gold hover:bg-casino-gold/80 text-black font-semibold"
@@ -138,6 +143,13 @@ export const ScratchCards = () => {
               >
                 <Sparkles className="mr-2 h-4 w-4" />
                 Gold ($200)
+              </Button>
+              <Button
+                onClick={() => handlePurchaseCard("diamond")}
+                className="w-full bg-blue-500 hover:bg-blue-500/80 text-white font-semibold"
+              >
+                <Diamond className="mr-2 h-4 w-4" />
+                Diamond ($500)
               </Button>
             </div>
           </div>

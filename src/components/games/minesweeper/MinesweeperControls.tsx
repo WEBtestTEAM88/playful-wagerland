@@ -20,8 +20,8 @@ export const MinesweeperControls = ({
   onStartGame,
 }: MinesweeperControlsProps) => {
   return (
-    <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
-      <div className="flex items-center gap-2">
+    <div className="flex flex-col gap-4 w-full">
+      <div className="flex flex-wrap items-center justify-center gap-2">
         <Button
           onClick={() => setBetAmount(Math.max(10, betAmount - 10))}
           disabled={isPlaying || betAmount <= 10}
@@ -29,7 +29,9 @@ export const MinesweeperControls = ({
         >
           -10
         </Button>
-        <span className="text-casino-gold px-4 min-w-[100px] text-center">Bet: ${betAmount}</span>
+        <span className="text-casino-gold px-4 min-w-[100px] text-center">
+          Bet: ${betAmount}
+        </span>
         <Button
           onClick={() => setBetAmount(betAmount + 10)}
           disabled={isPlaying || userBalance < betAmount + 10}
@@ -38,7 +40,8 @@ export const MinesweeperControls = ({
           +10
         </Button>
       </div>
-      <div className="flex items-center gap-2">
+      
+      <div className="flex flex-wrap items-center justify-center gap-2">
         <Button
           onClick={() => setDifficulty("easy")}
           disabled={isPlaying}
@@ -61,13 +64,16 @@ export const MinesweeperControls = ({
           Hard
         </Button>
       </div>
-      <Button
-        onClick={onStartGame}
-        disabled={isPlaying}
-        className="bg-casino-gold hover:bg-casino-gold/90 text-casino-black w-24 h-10"
-      >
-        Start Game
-      </Button>
+
+      <div className="flex justify-center">
+        <Button
+          onClick={onStartGame}
+          disabled={isPlaying}
+          className="bg-casino-gold hover:bg-casino-gold/90 text-casino-black w-24 h-10"
+        >
+          Start Game
+        </Button>
+      </div>
     </div>
   );
 };

@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { User } from "../types/casino";
 import { toast } from "@/components/ui/use-toast";
-import { saveUser, loadUsers, loadCurrentUser, persistUsers } from "@/utils/userStorage";
+import { saveUser, loadUsers, loadCurrentUser } from "@/utils/userStorage";
 
 interface UserContextType {
   user: User | null;
@@ -9,7 +9,7 @@ interface UserContextType {
   logout: () => void;
   updateBalance: (amount: number, userId?: string) => void;
   users: User[];
-  updateUserStats: (gameType: string, won: boolean, amount: number) => void;
+  updateUserStats: (won: boolean) => void;
   declareBankruptcy: () => void;
 }
 
@@ -27,11 +27,9 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         balance: 999999,
         createdAt: new Date(),
         stats: {
-          gamesPlayed: 0,
-          totalWinnings: 0,
-          totalLosses: 0,
-          biggestWin: 0,
-          gameStats: {}
+          wins: 0,
+          losses: 0,
+          streak: 0
         },
         inventory: [],
       };
@@ -52,11 +50,9 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         balance: 1000,
         createdAt: new Date(),
         stats: {
-          gamesPlayed: 0,
-          totalWinnings: 0,
-          totalLosses: 0,
-          biggestWin: 0,
-          gameStats: {}
+          wins: 0,
+          losses: 0,
+          streak: 0
         },
         inventory: [],
       };
@@ -99,25 +95,14 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const updateUserStats = (gameType: string, won: boolean, amount: number) => {
+  const updateUserStats = (won: boolean) => {
     if (user && user.id !== "admin") {
       const updatedUser = {
         ...user,
         stats: {
-          ...user.stats,
-          gamesPlayed: (user.stats.gamesPlayed || 0) + 1,
-          totalWinnings: (user.stats.totalWinnings || 0) + (won ? amount : 0),
-          totalLosses: (user.stats.totalLosses || 0) + (won ? 0 : amount),
-          biggestWin: won ? Math.max(user.stats.biggestWin || 0, amount) : (user.stats.biggestWin || 0),
-          gameStats: {
-            ...user.stats.gameStats,
-            [gameType]: {
-              wins: (user.stats.gameStats[gameType]?.wins || 0) + (won ? 1 : 0),
-              losses: (user.stats.gameStats[gameType]?.losses || 0) + (won ? 0 : 1),
-              totalWinnings: (user.stats.gameStats[gameType]?.totalWinnings || 0) + (won ? amount : 0),
-              totalLosses: (user.stats.gameStats[gameType]?.totalLosses || 0) + (won ? 0 : amount)
-            }
-          }
+          wins: user.stats.wins + (won ? 1 : 0),
+          losses: user.stats.losses + (won ? 0 : 1),
+          streak: won ? user.stats.streak + 1 : 0
         }
       };
       setUser(updatedUser);

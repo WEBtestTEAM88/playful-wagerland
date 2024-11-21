@@ -3,25 +3,14 @@ export interface User {
   username: string;
   balance: number;
   createdAt: Date;
-  stats: UserStats;
+  stats: BasicStats;
   inventory: InventoryItem[];
 }
 
-export interface UserStats {
-  gamesPlayed: number;
-  totalWinnings: number;
-  totalLosses: number;
-  biggestWin: number;
-  gameStats: {
-    [key: string]: GameStats;
-  };
-}
-
-export interface GameStats {
+export interface BasicStats {
   wins: number;
   losses: number;
-  totalWinnings: number;
-  totalLosses: number;
+  streak: number;
 }
 
 export interface InventoryItem {
@@ -30,14 +19,4 @@ export interface InventoryItem {
   description: string;
   type: "LUCKY_COIN" | "BONUS_CARD";
   modifier: number;
-}
-
-export interface RouletteGame {
-  id: string;
-  type: "ROULETTE";
-  bet: number;
-  selectedNumber: number;
-  result: number | null;
-  won: boolean;
-  timestamp: Date;
 }

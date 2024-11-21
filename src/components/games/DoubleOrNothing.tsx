@@ -41,14 +41,14 @@ export const DoubleOrNothing = () => {
         setTimeout(() => {
           updateBalance(winnings);
           setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
-          updateUserStats("doubleOrNothing", true, winnings - bet);
+          updateUserStats(true);
           toast.success(`You won $${winnings}!`);
         }, 100);
       } else {
         playLoseSound();
         setTimeout(() => {
           setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
-          updateUserStats("doubleOrNothing", false, 0);
+          updateUserStats(false);
           toast.error(`You lost $${bet}`);
         }, 100);
       }
@@ -64,6 +64,7 @@ export const DoubleOrNothing = () => {
         <div className="mt-2 flex justify-center gap-4 text-sm">
           <span className="text-green-500">Wins: {stats.wins}</span>
           <span className="text-red-500">Losses: {stats.losses}</span>
+          {user && <span className="text-casino-gold">Streak: {user.stats.streak}</span>}
         </div>
       </div>
 

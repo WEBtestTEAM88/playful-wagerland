@@ -20,6 +20,9 @@ import { ScratchCards } from "@/components/games/ScratchCards";
 import { TreasureHunt } from "@/components/games/TreasureHunt";
 import { Minesweeper } from "@/components/games/Minesweeper";
 import { MemoryMatch } from "@/components/games/MemoryMatch";
+import { PaperPlane } from "@/components/games/PaperPlane";
+import { HotAirBalloon } from "@/components/games/HotAirBalloon";
+import { FlightControl } from "@/components/games/FlightControl";
 
 const Index = () => {
   const { user, logout, declareBankruptcy } = useUser();
@@ -80,6 +83,9 @@ const Index = () => {
           <TreasureHunt />
           <Minesweeper />
           <MemoryMatch />
+          <PaperPlane />
+          <HotAirBalloon />
+          <FlightControl />
         </div>
       </div>
     </div>

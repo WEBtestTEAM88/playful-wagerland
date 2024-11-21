@@ -88,6 +88,8 @@ export const TreasureHunt = () => {
               +10
             </Button>
           </div>
+            </div>
+            <div className="flex justify-center">
           <Button
             onClick={initializeGame}
             disabled={isPlaying}

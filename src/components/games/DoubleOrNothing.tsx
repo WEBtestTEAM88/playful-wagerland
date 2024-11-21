@@ -37,22 +37,22 @@ export const DoubleOrNothing = () => {
     // Generate result immediately but show it after animation
     const success = Math.random() > 0.5;
 
+    // Play sound first, then update state and show toast
     setTimeout(() => {
-      setIsPlaying(false);
-
       if (success) {
+        playWinSound();
         const winnings = bet * 2;
         updateBalance(winnings);
         setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
         updateUserStats("doubleOrNothing", true, winnings - bet);
-        playWinSound();
         toast.success(`You won $${winnings}!`);
       } else {
+        playLoseSound();
         setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
         updateUserStats("doubleOrNothing", false, bet);
-        playLoseSound();
         toast.error(`You lost $${bet}`);
       }
+      setIsPlaying(false);
     }, 1000);
   };
 

@@ -46,7 +46,6 @@ export const DoubleOrNothing = () => {
       } else {
         playLoseSound();
         setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
-        updateUserStats(false);
         toast.error(`You lost $${bet}`);
       }
       setIsPlaying(false);

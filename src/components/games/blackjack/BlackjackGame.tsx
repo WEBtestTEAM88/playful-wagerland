@@ -22,19 +22,21 @@ export const BlackjackGame = () => {
     resetGame,
     calculateHand,
   } = useBlackjack({
+
     onWin: (amount) => {
       playWinSound();
       updateBalance(amount);
       setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
-      updateUserStats("blackjack", true, amount - bet);
+      updateUserStats(true);
       toast.success(`You won $${amount - bet}!`);
     },
     onLose: (amount) => {
       playLoseSound();
       setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
-      updateUserStats("blackjack", false, amount);
+      updateUserStats(false);
       toast.error("Better luck next time!");
     },
+
     onPush: (amount) => {
       updateBalance(amount);
       toast.info("Push - Your bet has been returned.");

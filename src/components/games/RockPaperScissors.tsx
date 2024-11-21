@@ -60,11 +60,12 @@ export const RockPaperScissors = () => {
         (choice === "paper" && computerChoice === "rock") ||
         (choice === "scissors" && computerChoice === "paper")
       ) {
+
         setResult("You win!");
         const winnings = bet * 2;
         updateBalance(winnings);
         playWinSound();
-        updateUserStats("rockPaperScissors", true, winnings - bet);
+        updateUserStats(true);
         setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
         toast({
           title: "Congratulations!",
@@ -72,10 +73,11 @@ export const RockPaperScissors = () => {
         });
       } else {
         setResult("You lose!");
-        updateUserStats("rockPaperScissors", false, bet);
+        updateUserStats(false);
         playLoseSound();
         setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
       }
+
       setIsPlaying(false);
     }, 1000);
   };

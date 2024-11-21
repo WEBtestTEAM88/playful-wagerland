@@ -48,12 +48,12 @@ export const WheelOfFortune = () => {
     setTimeout(() => {
       setIsSpinning(false);
       const segment = WHEEL_SEGMENTS[winningSegmentIndex];
-      
+
       if (segment.multiplier > 0) {
         const winnings = bet * segment.multiplier;
         updateBalance(winnings);
         setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
-        updateUserStats("wheelOfFortune", true, winnings - bet);
+        updateUserStats(true);
         setLastWin(winnings - bet);
         playWinSound();
         toast({
@@ -62,13 +62,14 @@ export const WheelOfFortune = () => {
         });
       } else {
         setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
-        updateUserStats("wheelOfFortune", false, bet);
+        updateUserStats(false);
         toast({
           title: "Better luck next time!",
           description: "Try again!",
           variant: "destructive",
         });
       }
+
     }, 4000);
   };
 
@@ -148,3 +149,4 @@ export const WheelOfFortune = () => {
     </Card>
   );
 };
+

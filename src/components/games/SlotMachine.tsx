@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useUser } from "@/contexts/UserContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -62,7 +62,7 @@ export const SlotMachine = () => {
         setLastWin(winnings);
         updateBalance(winnings);
         setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
-        updateUserStats("slotMachine", true, winnings);
+        updateUserStats(true);
         playWinSound();
         toast({
           title: "Jackpot!",
@@ -70,7 +70,7 @@ export const SlotMachine = () => {
         });
       } else {
         setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
-        updateUserStats("slotMachine", false, bet);
+        updateUserStats(false);
         playLoseSound();
       }
     }, 2000);

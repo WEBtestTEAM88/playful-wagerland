@@ -65,7 +65,7 @@ export const HighLow = () => {
       updateBalance(winnings);
       setStreak(prev => prev + 1);
       setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
-      updateUserStats("highLow", true, winnings);
+      updateUserStats(true);
       playWinSound();
       toast({
         title: "Correct!",
@@ -74,7 +74,7 @@ export const HighLow = () => {
     } else {
       setStreak(0);
       setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
-      updateUserStats("highLow", false, bet);
+      updateUserStats(false);
       playLoseSound();
       toast({
         title: "Wrong!",

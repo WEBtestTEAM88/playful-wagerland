@@ -70,6 +70,7 @@ export const ScratchCards = () => {
       return;
     }
 
+    // Deduct the price immediately
     updateBalance(-SCRATCH_PRICES[type]);
     setCurrentCard(type);
     setIsScratching(true);
@@ -101,12 +102,13 @@ export const ScratchCards = () => {
       setTotalWin(scratchWin);
       
       if (scratchWin > 0) {
+        // Add winnings to balance
         updateBalance(scratchWin);
-        updateUserStats("scratchcards", true, scratchWin - SCRATCH_PRICES[currentCard]);
+        updateUserStats(true);
         playWinSound();
         toast.success(`You won $${scratchWin}!`);
       } else {
-        updateUserStats("scratchcards", false, SCRATCH_PRICES[currentCard]);
+        updateUserStats(false);
         playLoseSound();
         toast.error("Better luck next time!");
       }

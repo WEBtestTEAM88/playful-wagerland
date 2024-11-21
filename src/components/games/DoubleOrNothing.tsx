@@ -28,29 +28,29 @@ export const DoubleOrNothing = () => {
       return;
     }
 
-    // Start game animation
     setIsPlaying(true);
-    
-    // Deduct bet immediately
     updateBalance(-bet);
 
     // Generate result immediately but show it after animation
     const success = Math.random() > 0.5;
 
-    // Play sound first, then update state and show toast
     setTimeout(() => {
       if (success) {
-        playWinSound();
         const winnings = bet * 2;
-        updateBalance(winnings);
-        setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
-        updateUserStats("doubleOrNothing", true, winnings - bet);
-        toast.success(`You won $${winnings}!`);
+        playWinSound();
+        setTimeout(() => {
+          updateBalance(winnings);
+          setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
+          updateUserStats("doubleOrNothing", true, winnings - bet);
+          toast.success(`You won $${winnings}!`);
+        }, 100);
       } else {
         playLoseSound();
-        setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
-        updateUserStats("doubleOrNothing", false, bet);
-        toast.error(`You lost $${bet}`);
+        setTimeout(() => {
+          setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
+          updateUserStats("doubleOrNothing", false, bet);
+          toast.error(`You lost $${bet}`);
+        }, 100);
       }
       setIsPlaying(false);
     }, 1000);

@@ -3,24 +3,24 @@ import { Button } from "@/components/ui/button";
 
 interface BlackjackControlsProps {
   gameState: "betting" | "playing" | "dealerTurn" | "finished";
+  bet: number;
+  onBetChange: (value: number) => void;
   onDeal: () => void;
   onHit: () => void;
   onStand: () => void;
-  onPlayAgain: () => void;
-  bet: number;
-  onBetChange: (value: number) => void;
-  isDisabled: boolean;
+  onReset: () => void;
+  userBalance: number;
 }
 
 export const BlackjackControls: FC<BlackjackControlsProps> = ({
   gameState,
+  bet,
+  onBetChange,
   onDeal,
   onHit,
   onStand,
-  onPlayAgain,
-  bet,
-  onBetChange,
-  isDisabled
+  onReset,
+  userBalance
 }) => {
   return (
     <div className="space-y-4">
@@ -38,7 +38,7 @@ export const BlackjackControls: FC<BlackjackControlsProps> = ({
           </div>
           <Button
             onClick={onDeal}
-            disabled={isDisabled}
+            disabled={bet > userBalance}
             className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-black"
           >
             Deal Cards
@@ -65,7 +65,7 @@ export const BlackjackControls: FC<BlackjackControlsProps> = ({
 
       {gameState === "finished" && (
         <Button
-          onClick={onPlayAgain}
+          onClick={onReset}
           className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-black"
         >
           Play Again

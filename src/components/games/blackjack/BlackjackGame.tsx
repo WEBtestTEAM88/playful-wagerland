@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useUser } from "@/contexts/UserContext";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { playWinSound, playLoseSound } from "@/utils/sounds";
@@ -21,6 +20,7 @@ export const BlackjackGame = () => {
     hit,
     stand,
     resetGame,
+    calculateHand,
   } = useBlackjack({
     onWin: (amount) => {
       playWinSound();
@@ -55,12 +55,14 @@ export const BlackjackGame = () => {
       {gameState !== "betting" && (
         <div className="space-y-4">
           <BlackjackHand
-            title="Dealer's Hand"
             hand={dealerHand}
+            label="Dealer's Hand"
+            score={calculateHand(dealerHand)}
           />
           <BlackjackHand
-            title="Your Hand"
             hand={playerHand}
+            label="Your Hand"
+            score={calculateHand(playerHand)}
           />
         </div>
       )}
@@ -68,7 +70,7 @@ export const BlackjackGame = () => {
       <BlackjackControls
         gameState={gameState}
         bet={bet}
-        setBet={setBet}
+        onBetChange={setBet}
         onDeal={dealCards}
         onHit={hit}
         onStand={stand}

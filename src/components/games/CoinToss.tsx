@@ -19,8 +19,13 @@ export const CoinToss = () => {
       return;
     }
 
+    if (bet <= 0) {
+      toast.error("Please enter a valid bet amount");
+      return;
+    }
+
     setIsFlipping(true);
-    // Deduct bet amount immediately
+    // Deduct bet immediately
     updateBalance(-bet);
 
     // Simulate coin flip
@@ -33,11 +38,11 @@ export const CoinToss = () => {
         updateBalance(winnings);
         setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
         playWinSound();
-        toast.success(`You won $${winnings}!`);
+        toast.success(`You won $${winnings - bet}!`);
       } else {
         setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
         playLoseSound();
-        toast.error("Better luck next time!");
+        toast.error(`You lost $${bet}!`);
       }
 
       updateUserStats(won);
@@ -67,7 +72,8 @@ export const CoinToss = () => {
             type="number"
             min={1}
             value={bet}
-            onChange={(e) => setBet(Number(e.target.value))}
+            onChange={(e) => setBet(Math.max(1, Number(e.target.value)))}
+            disabled={isFlipping}
             className="w-full bg-casino-black/50 border-casino-gold/30 text-casino-white rounded-md p-2"
           />
         </div>

@@ -7,14 +7,14 @@ import { playWinSound, playLoseSound } from "@/utils/sounds";
 import { Gem } from "lucide-react";
 
 const CHESTS = [
-  { multiplier: 1.5, chance: 0.4, color: "bg-bronze-400" },
-  { multiplier: 2.5, chance: 0.3, color: "bg-silver-400" },
-  { multiplier: 4.0, chance: 0.2, color: "bg-casino-gold" },
-  { multiplier: 10.0, chance: 0.1, color: "bg-purple-600" },
+  { multiplier: 1.5, chance: 0.4, color: "bg-gray-400 hover:bg-gray-500" },
+  { multiplier: 2.5, chance: 0.3, color: "bg-white hover:bg-gray-100" },
+  { multiplier: 4.0, chance: 0.2, color: "bg-casino-gold hover:bg-casino-gold/90" },
+  { multiplier: 10.0, chance: 0.1, color: "bg-purple-600 hover:bg-purple-700" },
 ];
 
 export const TreasureChest = () => {
-  const { user, updateBalance, updateUserStats } = useUser();
+  const { user, updateBalance } = useUser();
   const [bet, setBet] = useState(10);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -26,7 +26,13 @@ export const TreasureChest = () => {
       return;
     }
 
+    if (bet <= 0) {
+      toast.error("Please enter a valid bet amount");
+      return;
+    }
+
     setIsPlaying(true);
+    // Deduct bet immediately
     updateBalance(-bet);
 
     const random = Math.random();
@@ -42,7 +48,7 @@ export const TreasureChest = () => {
           won = true;
           updateBalance(winAmount);
           playWinSound();
-          toast.success(`You won $${winAmount.toFixed(2)}!`);
+          toast.success(`You won $${(winAmount - bet).toFixed(2)}!`);
         } else {
           playLoseSound();
           toast.error("Wrong chest! Better luck next time!");
@@ -51,7 +57,6 @@ export const TreasureChest = () => {
       }
     }
 
-    updateUserStats(won);
     setTimeout(() => setIsPlaying(false), 1000);
   };
 
@@ -70,10 +75,10 @@ export const TreasureChest = () => {
             key={index}
             onClick={() => openChest(index)}
             disabled={isPlaying || !user}
-            className={`h-24 ${chest.color} hover:opacity-90 transition-opacity flex flex-col items-center justify-center`}
+            className={`h-24 ${chest.color} transition-all duration-200 flex flex-col items-center justify-center border-2 border-gray-700`}
           >
             <Gem className="w-8 h-8 mb-2" />
-            <div className="text-black font-bold">{chest.multiplier}x</div>
+            <div className="text-black font-bold text-lg">{chest.multiplier}x</div>
           </Button>
         ))}
       </div>
@@ -84,7 +89,8 @@ export const TreasureChest = () => {
           type="number"
           min={1}
           value={bet}
-          onChange={(e) => setBet(Number(e.target.value))}
+          onChange={(e) => setBet(Math.max(1, Number(e.target.value)))}
+          disabled={isPlaying}
           className="w-full bg-casino-black/50 border-casino-gold/30 text-casino-white rounded-md p-2"
         />
       </div>

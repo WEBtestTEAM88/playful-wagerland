@@ -22,7 +22,7 @@ import { Minesweeper } from "@/components/games/Minesweeper";
 import { MemoryMatch } from "@/components/games/MemoryMatch";
 import { CoinToss } from "@/components/games/CoinToss";
 import { LuckyNumbers } from "@/components/games/LuckyNumbers";
-import { ColorWheel } from "@/components/games/ColorWheel";
+import { TreasureChest } from "@/components/games/TreasureChest";
 
 const Index = () => {
   const { user, logout, declareBankruptcy } = useUser();
@@ -85,7 +85,7 @@ const Index = () => {
           <DoubleOrNothing />
           <CoinToss />
           <LuckyNumbers />
-          <ColorWheel />
+          <TreasureChest />
         </div>
       </div>
     </div>

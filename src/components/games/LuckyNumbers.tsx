@@ -30,8 +30,13 @@ export const LuckyNumbers = () => {
       toast.error("Insufficient balance!");
       return;
     }
+    if (bet <= 0) {
+      toast.error("Please enter a valid bet amount");
+      return;
+    }
 
     setIsPlaying(true);
+    // Deduct bet immediately
     updateBalance(-bet);
 
     // Draw random numbers
@@ -41,19 +46,18 @@ export const LuckyNumbers = () => {
 
     setTimeout(() => {
       const matches = selectedNumbers.filter(n => drawnNumbers.includes(n)).length;
-      let winnings = 0;
 
       if (matches >= 2) {
         const multiplier = matches === 3 ? 50 : 5;
-        winnings = bet * multiplier;
+        const winnings = bet * multiplier;
         updateBalance(winnings);
         setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
         playWinSound();
-        toast.success(`${matches} matches! You won $${winnings}!`);
+        toast.success(`${matches} matches! You won $${winnings - bet}!`);
       } else {
         setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
         playLoseSound();
-        toast.error("Better luck next time!");
+        toast.error(`You lost $${bet}!`);
       }
 
       updateUserStats(matches >= 2);

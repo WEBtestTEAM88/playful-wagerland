@@ -51,8 +51,17 @@ export const Bingo = () => {
       });
       return;
     }
+    if (bet <= 0) {
+      toast({
+        title: "Invalid bet",
+        description: "Please enter a valid bet amount",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsPlaying(true);
+    // Deduct bet immediately
     updateBalance(-bet);
 
     // Draw 5 unique random numbers
@@ -65,12 +74,11 @@ export const Bingo = () => {
 
     // Check matches
     const matches = selectedNumbers.filter(n => drawnArray.includes(n)).length;
-    let winnings = 0;
 
     setTimeout(() => {
       if (matches >= 3) {
         const multiplier = matches === 5 ? 100 : matches === 4 ? 10 : 2;
-        winnings = bet * multiplier;
+        const winnings = bet * multiplier;
         playWinSound();
         updateBalance(winnings);
         setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
@@ -85,7 +93,7 @@ export const Bingo = () => {
         playLoseSound();
         toast({
           title: "No Bingo",
-          description: `Only ${matches} matches. Better luck next time!`,
+          description: `Only ${matches} matches. You lost $${bet}!`,
           variant: "destructive",
         });
       }

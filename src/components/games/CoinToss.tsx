@@ -44,8 +44,6 @@ export const CoinToss = () => {
         playLoseSound();
         toast.error(`You lost $${bet}!`);
       }
-
-      updateUserStats(won);
       setIsFlipping(false);
     }, 1500);
   };

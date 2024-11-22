@@ -20,6 +20,7 @@ export const CoinToss = () => {
     }
 
     setIsFlipping(true);
+    // Deduct bet amount immediately
     updateBalance(-bet);
 
     // Simulate coin flip

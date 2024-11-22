@@ -8,7 +8,7 @@ import { Gem } from "lucide-react";
 
 const CHESTS = [
   { multiplier: 1.5, chance: 0.4, color: "bg-gray-400 hover:bg-gray-500" },
-  { multiplier: 2.5, chance: 0.3, color: "bg-blue hover:bg-blue-100" },
+  { multiplier: 2.5, chance: 0.3, color: "bg-blue-400 hover:bg-blue-500" },
   { multiplier: 4.0, chance: 0.2, color: "bg-casino-gold hover:bg-casino-gold/90" },
   { multiplier: 10.0, chance: 0.1, color: "bg-purple-600 hover:bg-purple-700" },
 ];

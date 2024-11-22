@@ -20,6 +20,9 @@ import { ScratchCards } from "@/components/games/ScratchCards";
 import { TreasureHunt } from "@/components/games/TreasureHunt";
 import { Minesweeper } from "@/components/games/Minesweeper";
 import { MemoryMatch } from "@/components/games/MemoryMatch";
+import { CoinToss } from "@/components/games/CoinToss";
+import { LuckyNumbers } from "@/components/games/LuckyNumbers";
+import { ColorWheel } from "@/components/games/ColorWheel";
 
 const Index = () => {
   const { user, logout, declareBankruptcy } = useUser();
@@ -61,50 +64,32 @@ const Index = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        <SlotMachine />
-<Roulette />
-<WheelOfFortune />
-<Blackjack />
-<VideoPoker />
-<CardFlip />
-<LuckyDice />
-<Bingo />
-<HighLow />
-<DiamondMine />
-<RockPaperScissors />
-<Trivia />
-<FishHunter />
-<TreasureHunt />
-<Minesweeper />
-<ScratchCards />
-<HorseRacing />
-<MemoryMatch />
-<DoubleOrNothing />
+          <SlotMachine />
+          <Roulette />
+          <WheelOfFortune />
+          <Blackjack />
+          <VideoPoker />
+          <CardFlip />
+          <LuckyDice />
+          <Bingo />
+          <HighLow />
+          <DiamondMine />
+          <RockPaperScissors />
+          <Trivia />
+          <FishHunter />
+          <TreasureHunt />
+          <Minesweeper />
+          <ScratchCards />
+          <HorseRacing />
+          <MemoryMatch />
+          <DoubleOrNothing />
+          <CoinToss />
+          <LuckyNumbers />
+          <ColorWheel />
         </div>
       </div>
     </div>
   );
 };
-/*
-         <SlotMachine />
-          <Roulette />
-          <CardFlip />
-          <DiamondMine />
-          <LuckyDice />
-          <Blackjack />
-          <WheelOfFortune />
-          <HighLow />
-          <RockPaperScissors />
-          <DoubleOrNothing />
-          <Bingo />
-          <VideoPoker />
-          <Trivia />
-          <FishHunter />
-          <HorseRacing />
-          <ScratchCards />
-          <TreasureHunt />
-          <Minesweeper />
-          <MemoryMatch />
-*/
 
 export default Index;

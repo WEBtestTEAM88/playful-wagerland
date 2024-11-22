@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { playWinSound, playLoseSound } from "@/utils/sounds";
-import { Treasure } from "lucide-react";
+import { Gem } from "lucide-react";
 
 const CHESTS = [
   { multiplier: 1.5, chance: 0.4, color: "bg-bronze-400" },
@@ -72,7 +72,7 @@ export const TreasureChest = () => {
             disabled={isPlaying || !user}
             className={`h-24 ${chest.color} hover:opacity-90 transition-opacity flex flex-col items-center justify-center`}
           >
-            <Treasure className="w-8 h-8 mb-2" />
+            <Gem className="w-8 h-8 mb-2" />
             <div className="text-black font-bold">{chest.multiplier}x</div>
           </Button>
         ))}

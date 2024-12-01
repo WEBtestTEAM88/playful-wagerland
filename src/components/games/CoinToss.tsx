@@ -34,17 +34,17 @@ export const CoinToss = () => {
       const won = result === choice;
 
       if (won) {
-        const winnings = bet * 2; // This is the total amount including the bet
-        updateBalance(winnings); // Add winnings
+        const winnings = bet * 2;
+        playWinSound();
+        updateBalance(winnings);
         setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
         updateUserStats(true);
-        playWinSound();
-        toast.success(`You won $${winnings - bet}!`); // Show net winnings
+        toast.success(`You won $${winnings - bet}!`);
       } else {
+        playLoseSound();
         setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
         updateUserStats(false);
-        playLoseSound();
-        toast.error(`You lost $${bet}!`);
+        toast.error(`You lost $${bet}`);
       }
       setIsFlipping(false);
     }, 1500);

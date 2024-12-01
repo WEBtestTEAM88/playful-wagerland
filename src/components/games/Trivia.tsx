@@ -45,6 +45,15 @@ export const Trivia = () => {
       return;
     }
 
+    if (bet <= 0) {
+      toast({
+        title: "Invalid bet",
+        description: "Please enter a valid bet amount",
+        variant: "destructive",
+      });
+      return;
+    }
+
     updateBalance(-bet);
     await refetch();
     setGameState("playing");
@@ -59,6 +68,7 @@ export const Trivia = () => {
     if (isCorrect) {
       const winnings = bet * 2;
       updateBalance(winnings);
+      setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
       updateUserStats(true);
       playWinSound();
       toast({
@@ -66,11 +76,12 @@ export const Trivia = () => {
         description: `You won $${winnings - bet}!`,
       });
     } else {
+      setStats(prev => ({ ...prev, losses: prev.losses + 1 }));
       updateUserStats(false);
       playLoseSound();
       toast({
         title: "Wrong!",
-        description: "Better luck next time!",
+        description: `You lost $${bet}!`,
         variant: "destructive",
       });
     }

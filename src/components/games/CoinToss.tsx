@@ -34,11 +34,12 @@ export const CoinToss = () => {
       const won = result === choice;
 
       if (won) {
+        const winAmount = bet * 2;
         playWinSound();
-        updateBalance(bet * 2); // Win amount is 2x the bet
+        updateBalance(winAmount);
         setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
         updateUserStats(true);
-        toast.success(`You won $${bet}!`);
+        toast.success(`You won $${winAmount - bet}!`);
       } else {
         playLoseSound();
         setStats(prev => ({ ...prev, losses: prev.losses + 1 }));

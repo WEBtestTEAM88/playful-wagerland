@@ -66,14 +66,14 @@ export const Trivia = () => {
     const isCorrect = answer === questions[currentQuestion].correct_answer;
     
     if (isCorrect) {
-      const winnings = bet * 2;
-      updateBalance(winnings);
+      const winAmount = bet * 2;
+      updateBalance(winAmount);
       setStats(prev => ({ ...prev, wins: prev.wins + 1 }));
       updateUserStats(true);
       playWinSound();
       toast({
         title: "Correct!",
-        description: `You won $${winnings - bet}!`,
+        description: `You won $${winAmount - bet}!`,
       });
     } else {
       setStats(prev => ({ ...prev, losses: prev.losses + 1 }));

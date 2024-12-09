@@ -1,14 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useUser } from "@/contexts/UserContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { playWinSound, playLoseSound } from "@/utils/sounds";
-import { Rocket, Star } from "lucide-react";
+import { Rocket, Star, ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
 
-const RACE_DURATION = 5000; // 5 seconds
-const UPDATE_INTERVAL = 100; // Update progress every 100ms
-const OBSTACLE_CHANCE = 0.3; // 30% chance of obstacle per update
+const RACE_DURATION = 8000; // 8 seconds
+const UPDATE_INTERVAL = 50; // Update more frequently for smoother movement
+const OBSTACLE_CHANCE = 0.2; // 20% chance of obstacle per update
+const MOVEMENT_SPEED = 3; // Speed of lateral movement
 
 export const SpaceRace = () => {
   const { user, updateBalance, updateUserStats } = useUser();
@@ -16,7 +17,35 @@ export const SpaceRace = () => {
   const [isRacing, setIsRacing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [stats, setStats] = useState({ wins: 0, losses: 0 });
-  const [selectedLane, setSelectedLane] = useState(1);
+  const [position, setPosition] = useState(50); // 0-100 horizontal position
+  const [obstacles, setObstacles] = useState<Array<{ x: number; y: number }>>([]);
+
+  const handleKeyPress = useCallback((e: KeyboardEvent) => {
+    if (!isRacing) return;
+    
+    switch(e.key) {
+      case "ArrowLeft":
+        setPosition(prev => Math.max(0, prev - MOVEMENT_SPEED));
+        break;
+      case "ArrowRight":
+        setPosition(prev => Math.min(100, prev + MOVEMENT_SPEED));
+        break;
+    }
+  }, [isRacing]);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [handleKeyPress]);
+
+  const moveRocket = (direction: 'left' | 'right') => {
+    if (!isRacing) return;
+    if (direction === 'left') {
+      setPosition(prev => Math.max(0, prev - MOVEMENT_SPEED));
+    } else {
+      setPosition(prev => Math.min(100, prev + MOVEMENT_SPEED));
+    }
+  };
 
   const startRace = () => {
     if (!user) {
@@ -36,39 +65,57 @@ export const SpaceRace = () => {
 
     setIsRacing(true);
     setProgress(0);
+    setPosition(50);
+    setObstacles([]);
     updateBalance(-bet);
 
     let currentProgress = 0;
-    const interval = setInterval(() => {
+    let obstacleInterval = setInterval(() => {
+      if (Math.random() < OBSTACLE_CHANCE) {
+        setObstacles(prev => [...prev, {
+          x: Math.random() * 100,
+          y: currentProgress + (Math.random() * 20)
+        }]);
+      }
+    }, 500);
+
+    const raceInterval = setInterval(() => {
       currentProgress += (UPDATE_INTERVAL / RACE_DURATION) * 100;
       
-      // Random obstacles in different lanes
-      const hitObstacle = Math.random() < OBSTACLE_CHANCE && 
-                         Math.floor(Math.random() * 3) + 1 === selectedLane;
+      // Check for collisions
+      const hitObstacle = obstacles.some(obstacle => 
+        Math.abs(obstacle.x - position) < 10 && 
+        Math.abs(obstacle.y - currentProgress) < 5
+      );
       
       if (hitObstacle) {
-        currentProgress -= 5; // Lose 5% progress on obstacle hit
+        currentProgress -= 2; // Lose progress on obstacle hit
         toast.error("Hit an asteroid! Slowing down...");
       }
 
       if (currentProgress >= 100) {
-        clearInterval(interval);
+        clearInterval(raceInterval);
+        clearInterval(obstacleInterval);
         handleRaceEnd(true);
       } else if (currentProgress < 0) {
-        clearInterval(interval);
+        clearInterval(raceInterval);
+        clearInterval(obstacleInterval);
         handleRaceEnd(false);
       }
 
       setProgress(Math.max(0, Math.min(100, currentProgress)));
     }, UPDATE_INTERVAL);
 
-    // Cleanup interval if component unmounts
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(raceInterval);
+      clearInterval(obstacleInterval);
+    };
   };
 
   const handleRaceEnd = (finished: boolean) => {
     setIsRacing(false);
     setProgress(0);
+    setObstacles([]);
 
     if (finished) {
       const winAmount = bet * 3;
@@ -90,7 +137,7 @@ export const SpaceRace = () => {
       <div className="text-center">
         <h2 className="text-2xl font-bold text-casino-gold mb-2">Space Race</h2>
         <p className="text-sm text-gray-400">
-          Navigate through the asteroid field! Choose your lane wisely and reach the finish line for 3x your bet!
+          Navigate through the asteroid field using arrow keys or buttons! Reach the finish line for 3x your bet!
         </p>
         <div className="mt-2 flex justify-center gap-4 text-sm">
           <span className="text-green-500">Wins: {stats.wins}</span>
@@ -99,32 +146,57 @@ export const SpaceRace = () => {
       </div>
 
       <div className="space-y-4">
-        <div className="h-8 bg-gray-800 rounded-full overflow-hidden">
+        <div className="relative h-64 bg-gray-900 rounded-lg overflow-hidden">
+          {/* Progress track */}
           <div 
-            className="h-full bg-casino-gold transition-all duration-100"
-            style={{ width: `${progress}%` }}
+            className="absolute inset-0 bg-gradient-to-b from-purple-900/20 to-blue-900/20"
+            style={{ transform: `translateY(${100 - progress}%)` }}
           />
+          
+          {/* Obstacles */}
+          {obstacles.map((obstacle, index) => (
+            <div
+              key={index}
+              className="absolute w-4 h-4 text-yellow-500"
+              style={{
+                left: `${obstacle.x}%`,
+                top: `${100 - obstacle.y}%`,
+                transform: 'translate(-50%, -50%)'
+              }}
+            >
+              <Star className="animate-pulse" />
+            </div>
+          ))}
+          
+          {/* Player rocket */}
+          <div
+            className="absolute bottom-0 w-8 h-8 text-casino-gold transition-all duration-100"
+            style={{
+              left: `${position}%`,
+              transform: 'translateX(-50%)',
+              bottom: `${progress}%`
+            }}
+          >
+            <Rocket className={`${isRacing ? 'animate-bounce' : ''}`} />
+          </div>
         </div>
 
-        <div className="flex justify-center items-center h-24 gap-4">
-          {[1, 2, 3].map(lane => (
-            <Button
-              key={lane}
-              onClick={() => !isRacing && setSelectedLane(lane)}
-              className={`w-20 h-20 ${
-                selectedLane === lane 
-                  ? 'bg-casino-gold text-casino-black' 
-                  : 'bg-gray-800 text-casino-gold'
-              }`}
-              disabled={isRacing}
-            >
-              {selectedLane === lane ? (
-                <Rocket className={`w-8 h-8 ${isRacing ? 'animate-pulse' : ''}`} />
-              ) : (
-                <Star className="w-8 h-8" />
-              )}
-            </Button>
-          ))}
+        {/* Control buttons */}
+        <div className="flex justify-center gap-4">
+          <Button
+            onClick={() => moveRocket('left')}
+            disabled={!isRacing}
+            className="bg-casino-gold/20 hover:bg-casino-gold/30"
+          >
+            <ArrowLeft className="w-6 h-6" />
+          </Button>
+          <Button
+            onClick={() => moveRocket('right')}
+            disabled={!isRacing}
+            className="bg-casino-gold/20 hover:bg-casino-gold/30"
+          >
+            <ArrowRight className="w-6 h-6" />
+          </Button>
         </div>
 
         <div>

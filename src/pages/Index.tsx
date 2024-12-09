@@ -25,9 +25,9 @@ import { LuckyNumbers } from "@/components/games/LuckyNumbers";
 import { TreasureChest } from "@/components/games/TreasureChest";
 import { DiceRoller } from "@/components/games/DiceRoller";
 import { NumberGuess } from "@/components/games/NumberGuess";
-import { MatchThree } from "@/components/games/MatchThree";
 import { HigherLower } from "@/components/games/HigherLower";
-import { ColorMatch } from "@/components/games/ColorMatch";
+import { PiratePlunder } from "@/components/games/PiratePlunder";
+import { SpaceRace } from "@/components/games/SpaceRace";
 
 const Index = () => {
   const { user, logout, declareBankruptcy } = useUser();
@@ -93,9 +93,9 @@ const Index = () => {
           <TreasureChest />
           <DiceRoller />
           <NumberGuess />
-          <MatchThree />
           <HigherLower />
-          <ColorMatch />
+          <PiratePlunder />
+          <SpaceRace />
         </div>
       </div>
     </div>

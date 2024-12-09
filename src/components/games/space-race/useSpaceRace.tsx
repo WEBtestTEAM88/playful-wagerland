@@ -5,9 +5,9 @@ import { useUser } from "@/contexts/UserContext";
 
 const RACE_DURATION = 8000; // 8 seconds
 const UPDATE_INTERVAL = 50; // Update more frequently for smoother movement
-const OBSTACLE_CHANCE = 0.3; // Increased to 30% chance of obstacle per update
+const OBSTACLE_CHANCE = 0.3; // 30% chance of obstacle per update
 const MOVEMENT_SPEED = 3;
-const OBSTACLE_DAMAGE = 3; // Increased damage from obstacles
+const OBSTACLE_DAMAGE = 3;
 
 export const useSpaceRace = () => {
   const { user, updateBalance, updateUserStats } = useUser();
@@ -92,15 +92,15 @@ export const useSpaceRace = () => {
       if (Math.random() < OBSTACLE_CHANCE) {
         setObstacles(prev => [...prev, {
           x: Math.random() * 100,
-          y: currentProgress + (Math.random() * 20)
+          // Spawn asteroids 20-40% ahead of the current progress
+          y: currentProgress + 20 + (Math.random() * 20)
         }]);
       }
-    }, 400); // Increased obstacle frequency
+    }, 400);
 
     const raceInterval = setInterval(() => {
       currentProgress += (UPDATE_INTERVAL / RACE_DURATION) * 100;
       
-      // Check for collisions with increased damage
       const hitObstacle = obstacles.some(obstacle => 
         Math.abs(obstacle.x - position) < 10 && 
         Math.abs(obstacle.y - currentProgress) < 5

@@ -7,7 +7,7 @@ const RACE_DURATION = 8000; // 8 seconds
 const UPDATE_INTERVAL = 50; // Update more frequently for smoother movement
 const OBSTACLE_CHANCE = 0.3; // 30% chance of obstacle per update
 const MOVEMENT_SPEED = 3;
-const OBSTACLE_DAMAGE = 3;
+const OBSTACLE_DAMAGE = 15; // Increased damage to make collisions more impactful
 
 export const useSpaceRace = () => {
   const { user, updateBalance, updateUserStats } = useUser();
@@ -101,21 +101,30 @@ export const useSpaceRace = () => {
     const raceInterval = setInterval(() => {
       currentProgress += (UPDATE_INTERVAL / RACE_DURATION) * 100;
       
-      const hitObstacle = obstacles.some(obstacle => 
-        Math.abs(obstacle.x - position) < 10 && 
-        Math.abs(obstacle.y - currentProgress) < 5
-      );
+      // Check for collisions with more precise hit detection
+      const hitObstacle = obstacles.some(obstacle => {
+        const xDiff = Math.abs(obstacle.x - position);
+        const yDiff = Math.abs(obstacle.y - currentProgress);
+        return xDiff < 8 && yDiff < 8; // Tighter collision detection
+      });
       
       if (hitObstacle) {
-        currentProgress -= OBSTACLE_DAMAGE;
+        currentProgress = Math.max(0, currentProgress - OBSTACLE_DAMAGE);
         toast.error("Hit an asteroid! Losing altitude!");
+        
+        // Clear some nearby obstacles to prevent chain reactions
+        setObstacles(prev => 
+          prev.filter(obstacle => 
+            Math.abs(obstacle.y - currentProgress) > 15
+          )
+        );
       }
 
       if (currentProgress >= 100) {
         clearInterval(raceInterval);
         clearInterval(obstacleInterval);
         handleRaceEnd(true);
-      } else if (currentProgress < 0) {
+      } else if (currentProgress <= 0) {
         clearInterval(raceInterval);
         clearInterval(obstacleInterval);
         handleRaceEnd(false);

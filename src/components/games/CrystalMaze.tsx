@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { useUser } from "@/contexts/UserContext";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { useUser } from "@/contexts/UserContext";
 import { toast } from "sonner";
 import { playWinSound, playLoseSound } from "@/utils/sounds";
-import { Diamond, Skull, Battery } from "lucide-react";
+import { Diamond, Battery } from "lucide-react";
+import { CrystalMazeGrid } from "./crystalMaze/CrystalMazeGrid";
+import { CrystalMazeControls } from "./crystalMaze/CrystalMazeControls";
+import { useKeyboardControls } from "./crystalMaze/useKeyboardControls";
 
 const GRID_SIZE = 8;
 const CRYSTAL_COUNT = 5;
@@ -24,6 +28,64 @@ export const CrystalMaze = () => {
   const [revealed, setRevealed] = useState<Array<Array<boolean>>>(
     Array(GRID_SIZE).fill(Array(GRID_SIZE).fill(false))
   );
+
+  const move = (dx: number, dy: number) => {
+    if (!isPlaying || energy <= 0) return;
+
+    const newX = playerPos.x + dx;
+    const newY = playerPos.y + dy;
+
+    if (newX < 0 || newX >= GRID_SIZE || newY < 0 || newY >= GRID_SIZE) {
+      return;
+    }
+
+    // Update position and reveal cells around new position
+    setPlayerPos({ x: newX, y: newY });
+    const newRevealed = revealed.map((row, y) =>
+      row.map((cell, x) => {
+        if (Math.abs(x - newX) <= 1 && Math.abs(y - newY) <= 1) {
+          return true;
+        }
+        return cell;
+      })
+    );
+    setRevealed(newRevealed);
+
+    // Handle cell content
+    const cellContent = grid[newY][newX];
+    if (cellContent === "crystal") {
+      playWinSound();
+      setCrystalsCollected(prev => prev + 1);
+      const newGrid = grid.map(row => [...row]);
+      newGrid[newY][newX] = "";
+      setGrid(newGrid);
+      
+      if (crystalsCollected + 1 === CRYSTAL_COUNT) {
+        endGame(true);
+      }
+    } else if (cellContent === "trap") {
+      playLoseSound();
+      setEnergy(prev => {
+        const newEnergy = Math.max(0, prev - ENERGY_DRAIN);
+        if (newEnergy <= 0) {
+          endGame(false);
+        }
+        return newEnergy;
+      });
+    }
+
+    // Drain energy for movement
+    setEnergy(prev => {
+      const newEnergy = prev - 5;
+      if (newEnergy <= 0) {
+        endGame(false);
+      }
+      return newEnergy;
+    });
+  };
+
+  // Add keyboard controls
+  useKeyboardControls(move, isPlaying);
 
   const initializeGame = () => {
     if (!user) {
@@ -79,58 +141,6 @@ export const CrystalMaze = () => {
     setIsPlaying(true);
   };
 
-  const move = (dx: number, dy: number) => {
-    if (!isPlaying || energy <= 0) return;
-
-    const newX = playerPos.x + dx;
-    const newY = playerPos.y + dy;
-
-    if (newX < 0 || newX >= GRID_SIZE || newY < 0 || newY >= GRID_SIZE) {
-      return;
-    }
-
-    // Update position and reveal cells around new position
-    setPlayerPos({ x: newX, y: newY });
-    const newRevealed = revealed.map((row, y) =>
-      row.map((cell, x) => {
-        if (Math.abs(x - newX) <= 1 && Math.abs(y - newY) <= 1) {
-          return true;
-        }
-        return cell;
-      })
-    );
-    setRevealed(newRevealed);
-
-    // Handle cell content
-    const cellContent = grid[newY][newX];
-    if (cellContent === "crystal") {
-      playWinSound();
-      setCrystalsCollected(prev => prev + 1);
-      const newGrid = grid.map(row => [...row]);
-      newGrid[newY][newX] = "";
-      setGrid(newGrid);
-      
-      if (crystalsCollected + 1 === CRYSTAL_COUNT) {
-        endGame(true);
-      }
-    } else if (cellContent === "trap") {
-      playLoseSound();
-      setEnergy(prev => Math.max(0, prev - ENERGY_DRAIN));
-      if (energy - ENERGY_DRAIN <= 0) {
-        endGame(false);
-      }
-    }
-
-    // Drain energy for movement
-    setEnergy(prev => {
-      const newEnergy = prev - 5;
-      if (newEnergy <= 0) {
-        endGame(false);
-      }
-      return newEnergy;
-    });
-  };
-
   const endGame = (won: boolean) => {
     setIsPlaying(false);
     if (won) {
@@ -148,111 +158,68 @@ export const CrystalMaze = () => {
 
   return (
     <Card className="p-6 space-y-6 bg-casino-black/90 border-casino-gold/20">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-casino-gold mb-2">Crystal Maze</h2>
-        <p className="text-sm text-gray-400">
-          Navigate the maze, collect crystals, avoid traps!
-        </p>
-        <div className="mt-2 flex justify-center gap-4 text-sm">
-          <span className="text-green-500">Wins: {stats.wins}</span>
-          <span className="text-red-500">Losses: {stats.losses}</span>
-        </div>
-      </div>
-
-      <div className="flex justify-between items-center">
-        <div className="text-casino-gold">
-          <Diamond className="inline-block mr-2" />
-          {crystalsCollected}/{CRYSTAL_COUNT}
-        </div>
-        <div className="text-yellow-500">
-          <Battery className="inline-block mr-2" />
-          {energy}%
-        </div>
-      </div>
-
-      <div className="grid grid-cols-8 gap-1 bg-casino-black/50 p-2 rounded-lg">
-        {grid.map((row, y) =>
-          row.map((cell, x) => (
-            <div
-              key={`${x}-${y}`}
-              className={`w-10 h-10 flex items-center justify-center rounded ${
-                playerPos.x === x && playerPos.y === y
-                  ? "bg-blue-500"
-                  : revealed[y][x]
-                  ? "bg-casino-black/80"
-                  : "bg-casino-black/30"
-              }`}
-            >
-              {revealed[y][x] && cell === "crystal" && (
-                <Diamond className="text-yellow-500" size={20} />
-              )}
-              {revealed[y][x] && cell === "trap" && (
-                <Skull className="text-red-500" size={20} />
-              )}
-              {playerPos.x === x && playerPos.y === y && "🚀"}
-            </div>
-          ))
-        )}
-      </div>
-
-      {isPlaying ? (
-        <div className="grid grid-cols-3 gap-2">
-          <Button
-            onClick={() => move(0, -1)}
-            disabled={!isPlaying || energy <= 0}
-            className="col-start-2"
-          >
-            ↑
-          </Button>
-          <Button
-            onClick={() => move(-1, 0)}
-            disabled={!isPlaying || energy <= 0}
-            className="col-start-1"
-          >
-            ←
-          </Button>
-          <Button
-            onClick={() => move(0, 1)}
-            disabled={!isPlaying || energy <= 0}
-            className="col-start-2"
-          >
-            ↓
-          </Button>
-          <Button
-            onClick={() => move(1, 0)}
-            disabled={!isPlaying || energy <= 0}
-            className="col-start-3"
-          >
-            →
-          </Button>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          <div>
-            <label className="text-sm text-gray-400 mb-1 block">Bet Amount</label>
-            <input
-              type="number"
-              min={MIN_BET}
-              value={bet}
-              onChange={(e) => setBet(Math.max(MIN_BET, Number(e.target.value)))}
-              className="w-full bg-casino-black/50 border-casino-gold/30 text-casino-white rounded-md p-2"
-            />
+      <CardHeader>
+        <CardTitle className="text-center text-casino-gold">Crystal Maze</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="text-center">
+          <p className="text-sm text-gray-400">
+            Navigate the maze, collect crystals, avoid traps!
+          </p>
+          <div className="mt-2 flex justify-center gap-4 text-sm">
+            <span className="text-green-500">Wins: {stats.wins}</span>
+            <span className="text-red-500">Losses: {stats.losses}</span>
           </div>
-          <Button
-            onClick={initializeGame}
-            disabled={!user || bet > (user?.balance || 0)}
-            className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-black"
-          >
-            Start Game (${bet})
-          </Button>
         </div>
-      )}
 
-      {user && (
-        <div className="text-center text-sm text-gray-400">
-          Balance: ${user.balance}
+        <div className="flex justify-between items-center">
+          <div className="text-casino-gold">
+            <Diamond className="inline-block mr-2" />
+            {crystalsCollected}/{CRYSTAL_COUNT}
+          </div>
+          <div className="text-yellow-500">
+            <Battery className="inline-block mr-2" />
+            {energy}%
+          </div>
         </div>
-      )}
+
+        <CrystalMazeGrid
+          grid={grid}
+          revealed={revealed}
+          playerPos={playerPos}
+          size={GRID_SIZE}
+        />
+
+        {isPlaying ? (
+          <CrystalMazeControls onMove={move} isPlaying={isPlaying} />
+        ) : (
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm text-gray-400 mb-1 block">Bet Amount</label>
+              <Input
+                type="number"
+                min={MIN_BET}
+                value={bet}
+                onChange={(e) => setBet(Number(e.target.value))}
+                className="bg-casino-black/50 border-casino-gold/30 text-casino-white"
+              />
+            </div>
+            <Button
+              onClick={initializeGame}
+              disabled={!user || bet > (user?.balance || 0)}
+              className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-black"
+            >
+              Start Game (${bet})
+            </Button>
+          </div>
+        )}
+
+        {user && (
+          <div className="text-center text-sm text-gray-400">
+            Balance: ${user.balance}
+          </div>
+        )}
+      </CardContent>
     </Card>
   );
 };

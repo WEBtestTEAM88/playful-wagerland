@@ -27,7 +27,7 @@ import { DiceRoller } from "@/components/games/DiceRoller";
 import { NumberGuess } from "@/components/games/NumberGuess";
 import { HigherLower } from "@/components/games/HigherLower";
 import { PiratePlunder } from "@/components/games/PiratePlunder";
-import { SpaceRace } from "@/components/games/SpaceRace";
+import { CrystalMaze } from "@/components/games/CrystalMaze";
 
 const Index = () => {
   const { user, logout, declareBankruptcy } = useUser();
@@ -95,7 +95,7 @@ const Index = () => {
           <NumberGuess />
           <HigherLower />
           <PiratePlunder />
-          <SpaceRace />
+          <CrystalMaze />
         </div>
       </div>
     </div>

@@ -92,7 +92,6 @@ export const useSpaceRace = () => {
       if (Math.random() < OBSTACLE_CHANCE) {
         setObstacles(prev => [...prev, {
           x: Math.random() * 100,
-          // Spawn asteroids 20-40% ahead of the current progress
           y: currentProgress + 20 + (Math.random() * 20)
         }]);
       }
@@ -101,24 +100,32 @@ export const useSpaceRace = () => {
     const raceInterval = setInterval(() => {
       currentProgress += (UPDATE_INTERVAL / RACE_DURATION) * 100;
       
-      // Check for collisions with more precise hit detection
-      const hitObstacle = obstacles.some(obstacle => {
+      // Check for collisions
+      obstacles.forEach(obstacle => {
         const xDiff = Math.abs(obstacle.x - position);
         const yDiff = Math.abs(obstacle.y - currentProgress);
-        return xDiff < 8 && yDiff < 8; // Tighter collision detection
-      });
-      
-      if (hitObstacle) {
-        currentProgress = Math.max(0, currentProgress - OBSTACLE_DAMAGE);
-        toast.error("Hit an asteroid! Losing altitude!");
+        console.log('Checking collision:', { 
+          xDiff, 
+          yDiff, 
+          position, 
+          obstacleX: obstacle.x, 
+          obstacleY: obstacle.y, 
+          currentProgress 
+        });
         
-        // Clear some nearby obstacles to prevent chain reactions
-        setObstacles(prev => 
-          prev.filter(obstacle => 
-            Math.abs(obstacle.y - currentProgress) > 15
-          )
-        );
-      }
+        if (xDiff < 8 && yDiff < 8) {
+          console.log('Collision detected!');
+          currentProgress = Math.max(0, currentProgress - OBSTACLE_DAMAGE);
+          toast.error("Hit an asteroid! Losing altitude!");
+          
+          // Clear nearby obstacles
+          setObstacles(prev => 
+            prev.filter(obs => 
+              Math.abs(obs.y - currentProgress) > 15
+            )
+          );
+        }
+      });
 
       if (currentProgress >= 100) {
         clearInterval(raceInterval);
